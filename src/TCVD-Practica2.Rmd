@@ -1,6 +1,6 @@
 ---
 title: "Practica 2"
-author: "Estadística avanzada"
+author: "Tipologia y Ciclo de Vida De Los Datos"
 date: "Diciembre 2021"
 output:
   html_document:
@@ -49,74 +49,4 @@ lang: es
 # 6- Resolución del problema
 ******
 
-
-### Apartado a
-
-### Apartado b
-
-
-## 1.2 - Modelo de regresión lineal
-
-### Apartado a
-
-
-### Apartado b
-
-
-## 1.3 - Modelo de regresión lineal multiple
-
-### Apartado a
-
-### Apartado b
-
-
-### Apartado c
-
-
-## 1.4 - Diagnosis del modelo
-
-
-## 1.5 - Predicción del modelo
-
-
-******
-# 2- Regresión logística
-******
-## 2.1 - Estudio de relaciones entre variables. Análisis crudo de posibles factores de riesgo
-
-### Apartado a
-
-
-
-### Apartado b
-
-
-
-
-## 2.2 - Modelo de regresión logística
-
-### Apartado a
-
-
-### Apartado b
-
-
-### Apartado c
-
-### Apartado d
-
-
-## 2.3 - Predicción
-
-
-## 2.4 - Bondad del Ajuste
-
-
-
-## 2.5 - Curva ROC
-
-
-******
-# 3- Conclusiones
-******
 
