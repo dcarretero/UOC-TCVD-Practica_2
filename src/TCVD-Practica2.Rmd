@@ -14,13 +14,83 @@ output:
 lang: es
 ---
 
+> Antes de empezar cargamos todas las librerías necesarias.
+
+```{r}
+if(!require(DataExplorer)){
+    install.packages('DataExplorer', repos='http://cran.us.r-project.org')
+    library(DataExplorer)
+}
+```
+
 ******
 # 1- Descripción del dataset
 ******
 
+> Nuestra selección del dataset es: Red Wine Quality de.
+
+> * https://www.kaggle.com/uciml/red-wine-quality-cortez-et-al-2009
+
+> Tenemos dos conjuntos de datos que están relacionados con variantes tinto y blanco del vino portugués "Vinho Verde".
+
+> Ambos datasets contienen 12 variables númericas:
+
+> * **fixed.acidity**: el nivel de la acidez fija.
+  * **volatile.acidity**: el nivel de la acidez volátil.
+  * **citric.acid**: el nivel del ácido cítrico.
+  * **residual.sugar**: el nivel del azúcar residual.
+  * **chlorides**: el nivel de los cloruros.
+  * **free.sulfur.dioxide**: el nivel del dióxido de azufre libre.
+  * **total.sulfur.dioxide**: el nivel del dióxido de azufre total.
+  * **density**: el nivel de la densidad.
+  * **pH**: el nivel del pH.
+  * **sulphates**: el nivel de los sulfatos.
+  * **alcohol**: el nivel del alcohol.
+  * **quality**: la calidad.
+
+> La pregunta que nos planteamos gira entorno a las propiedades y calidad del vino (incluye la comparativa entre diferentes tipos de vinos): 
+
+> * ¿Qué propiedades fisicoquímicas hacen que un vino (tinto y/o blanco) sea bueno?
+
 ******
 # 2- Integración y selección de los datos de interés
 ******
+
+> Nuestra propuesta pasa por integrar ambos datasets en uno nuevo `dt_winequality` que contenga una nueva variable para determinar si el vino es tinto o blanco.
+
+> Primero realizamos la carga del archivos de datos `winequality-red.csv` y añadimos una nueva variable `type` con valor `red`.
+
+```{r}
+dt_red_wines<-read.csv("../datasets/winequality-red.csv", header=T, sep=";")
+type<-"red"
+dt_red_wines<-cbind(type, dt_red_wines)
+```
+
+> A continuación realizamos la carga del archivos de datos `winequality-white.csv` y añadimos también la variable `type` esta vez con valor `white`.
+
+```{r}
+dt_white_wines<-read.csv("../datasets/winequality-white.csv", header=T, sep=";")
+type<-"white"
+dt_white_wines<-cbind(type, dt_white_wines)
+```
+
+> Con las funciones `dim()` y `str()` comparamos las dimensiones de los conjuntos de datos y sus estructuras antes de realizar la integración de ambos datasets.
+
+```{r}
+dim(dt_red_wines)
+str(dt_red_wines)
+dim(dt_white_wines)
+str(dt_white_wines)
+```
+
+> Los resultados nos muestran que ambos datasets contienen 13 variables contínuas y que el dataset de los vinos blancos es hasta tres veces más grande que el dataset de los vinos rojos.
+
+```{r}
+dt_winequality<-rbind(dt_red_wines, dt_white_wines)
+dim(dt_winequality)
+```
+
+> Los resultados muestran que los datos (6497 observaciones y 13 variables) se han integrado correctamente.
 
 ******
 # 3- Limpieza de datos
@@ -28,8 +98,112 @@ lang: es
 
 ## 3.1 - Valores perdidos
 
+> Las funciones `introduce(dt_winequality)` y `plot_intro(dt_winequality)` describen la información básica para los datos de entrada.
+
+```{r}
+introduce(dt_winequality)
+plot_intro(dt_winequality)
+```
+
+> Observamos que no hay valores perdidos.
+
 ## 3.2 - Identificación y tratamiento de valores extremos
 
+> Diagrama de caja para la variable `fixed.acidity`.
+
+```{r}
+boxplot(dt_winequality$fixed.acidity[dt_winequality$type=="red"],
+        dt_winequality$fixed.acidity[dt_winequality$type=="white"],
+        main="fixed.acidity", names=c("red", "white"))
+```
+
+> Diagrama de caja para la variable `volatile.acidity`.
+
+```{r}
+boxplot(dt_winequality$volatile.acidity[dt_winequality$type=="red"],
+        dt_winequality$volatile.acidity[dt_winequality$type=="white"],
+        main="volatile.acidity", names=c("red", "white"))
+```
+
+> Diagrama de caja para la variable `citric.acid`.
+
+```{r}
+boxplot(dt_winequality$citric.acid[dt_winequality$type=="red"],
+        dt_winequality$citric.acid[dt_winequality$type=="white"],
+        main="citric.acid", names=c("red", "white"))
+```
+
+> Diagrama de caja para la variable `residual.sugar`.
+
+```{r}
+boxplot(dt_winequality$residual.sugar[dt_winequality$type=="red"],
+        dt_winequality$residual.sugar[dt_winequality$type=="white"],
+        main="residual.sugar", names=c("red", "white"))
+```
+
+> Diagrama de caja para la variable `chlorides`.
+
+```{r}
+boxplot(dt_winequality$chlorides[dt_winequality$type=="red"],
+        dt_winequality$chlorides[dt_winequality$type=="white"],
+        main="chlorides", names=c("red", "white"))
+```
+
+> Diagrama de caja para la variable `free.sulfur.dioxide`.
+
+```{r}
+boxplot(dt_winequality$free.sulfur.dioxide[dt_winequality$type=="red"],
+        dt_winequality$free.sulfur.dioxide[dt_winequality$type=="white"],
+        main="free.sulfur.dioxide", names=c("red", "white"))
+```
+
+> Diagrama de caja para la variable `total.sulfur.dioxide`.
+
+```{r}
+boxplot(dt_winequality$total.sulfur.dioxide[dt_winequality$type=="red"],
+        dt_winequality$total.sulfur.dioxide[dt_winequality$type=="white"],
+        main="total.sulfur.dioxide", names=c("red", "white"))
+```
+
+> Diagrama de caja para la variable `density`.
+
+```{r}
+boxplot(dt_winequality$density[dt_winequality$type=="red"],
+        dt_winequality$density[dt_winequality$type=="white"],
+        main="density", names=c("red", "white"))
+```
+
+> Diagrama de caja para la variable `pH`.
+
+```{r}
+boxplot(dt_winequality$pH[dt_winequality$type=="red"],
+        dt_winequality$pH[dt_winequality$type=="white"],
+        main="pH", names=c("red", "white"))
+```
+
+> Diagrama de caja para la variable `sulphates`.
+
+```{r}
+boxplot(dt_winequality$sulphates[dt_winequality$type=="red"],
+        dt_winequality$sulphates[dt_winequality$type=="white"],
+        main="sulphates", names=c("red", "white"))
+```
+
+> Diagrama de caja para la variable `alcohol`.
+
+```{r}
+boxplot(dt_winequality$alcohol[dt_winequality$type=="red"],
+        dt_winequality$alcohol[dt_winequality$type=="white"],
+        main="alcohol", names=c("red", "white"))
+```
+
+> Diagrama de caja para la variable `quality`.
+
+```{r}
+boxplot(dt_winequality$quality[dt_winequality$type=="red"],
+        dt_winequality$quality[dt_winequality$type=="white"],
+        main="quality", names=c("red", "white"))
+```
 
 ******
 # 4- Análisis de datos
@@ -48,5 +222,3 @@ lang: es
 ******
 # 6- Resolución del problema
 ******
-
-
