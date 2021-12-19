@@ -17,10 +17,21 @@ lang: es
 > Antes de empezar cargamos todas las librerías necesarias.
 
 ```{r}
+# https://cran.r-project.org/web/packages/DataExplorer/index.html
 if(!require(DataExplorer)){
     install.packages('DataExplorer', repos='http://cran.us.r-project.org')
     library(DataExplorer)
 }
+# https://cran.r-project.org/web/packages/ggplot2/index.html
+if (!require('ggplot2')) install.packages('ggplot2'); library('ggplot2')
+# https://cran.r-project.org/web/packages/dplyr/index.html
+if (!require('dplyr')) install.packages('dplyr'); library('dplyr')
+# https://cran.r-project.org/web/packages/skimr/index.html
+if (!require('skimr')) install.packages('skimr'); library ('skimr')
+# https://cran.r-project.org/web/packages/corrplot/index.html
+if (!require('corrplot')) install.packages('corrplot'); library('corrplot')
+# https://cran.r-project.org/web/packages/nortest/index.html
+if (!require('nortest')) install.packages('nortest'); library ('nortest')
 ```
 
 ******
@@ -211,7 +222,38 @@ boxplot(dt_winequality$quality[dt_winequality$type=="red"],
 
 ## 4.1 - Selección del grupo de datos que se quiere analizar
 
-## 4.2 - Comprobación de la normailidad y homogeneidad de la varianza
+> Se mira la correlación entre variables explicativas para ver si es descartable alguna de ellas.
+
+```{r}
+dt_winequality.corr <-dt_winequality%>%select(-c(quality,type))
+dt_winequality.mat.corr <- cor(dt_winequality.corr,method =  "pearson", use="pairwise.complete.obs")
+col <- colorRampPalette(c("#BB4444", "#EE9988", "#FFFFFF", "#77AADD","#4477AA"))
+
+
+corrplot(dt_winequality.mat.corr, type="upper", method = "shade", shade.col = NA, tl.col = "black", tl.srt = 45, col = col(50), addCoef.col="black",order="AOE",mar = c(0.0001,1,1,1), number.cex=0.5,cl.cex = 0.7,tl.cex = 0.7, title = " Matriz de correlación")
+```
+
+> Las correlaciones mas altas son:
+
+ * densidad con alcohol (-0.69)
+ * free.sulfur.dioxide con tota.sulfur.dioxide (0.72)
+
+> Aún siendo altas ambas correlaciones, se decide mantener estas variables en el modelado.  En caso de haber habido un conjunto mayor de variables explicativas, estas variables correlacionadas hubiesen sido las primeras candidatas a eliminarse del modelo, pero el no tener unos valores mas próximos a 1 y el hecho de no tener excesivas variables explicativas se ha optado por mantenerlas.
+
+> En este caso se va a optar por utilizar todas las variables explicativas numéricas en los diferentes modelos predictivos que se realicen. La variable explicativa "type" solo va a ser utilizada en el contraste de hipotesis para ver si hay una diferencia en la media de calidad por tipo de vino.
+La variable de respuestas seleccionada es "quality" y es aquella para que se va entrenar el modelo predictivo.
+
+## 4.2 - Comprobación de la normalidad y homogeneidad de la varianza
+
+> Se va a trabajar para el contraste de hipotesis con las medias muestrales, con lo cual al ser una muestra mayor de 30 elementos puede aplicarse el teorema del limite central bajo el cual se supone que dichas medias muestrales siguen una distribución normal.
+En cuanto a la homogeneidad de la varianza de la variable de respuesta "quality" entre el conjunto de vinos tintos y blancos se observa que las varianzas de ambos grupos no puede descartarse la hipotesis nula de que sean varianzas iguales al dar un valor de F que se encuentra dentro del intervalo de confianza.
+
+```{r}
+
+var.test(dt_red_wines$quality,dt_white_wines$quality)
+```
+
+
 
 ## 4.3 - Pruebas estadísticas
 
