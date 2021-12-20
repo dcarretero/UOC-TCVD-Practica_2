@@ -22,7 +22,7 @@ if(!require(DataExplorer)){
     install.packages('DataExplorer', repos='http://cran.us.r-project.org')
     library(DataExplorer)
 }
-# https://cran.r-project.org/web/packages/ggplot2/index.html
+
 if (!require('ggplot2')) install.packages('ggplot2'); library('ggplot2')
 # https://cran.r-project.org/web/packages/dplyr/index.html
 if (!require('dplyr')) install.packages('dplyr'); library('dplyr')
@@ -242,6 +242,13 @@ corrplot(dt_winequality.mat.corr, type="upper", method = "shade", shade.col = NA
 
 > En este caso se va a optar por utilizar todas las variables explicativas numéricas en los diferentes modelos predictivos que se realicen. La variable explicativa "type" solo va a ser utilizada en el contraste de hipotesis para ver si hay una diferencia en la media de calidad por tipo de vino.
 La variable de respuestas seleccionada es "quality" y es aquella para que se va entrenar el modelo predictivo.
+
+> Por último comentar que se va a generar una variable dicotimica a partir de la variable de calidad. Esta variable "quality_class" permitirá clasificar el vino y hacer algoritmos predictivos sobre una variable de respuesta categorica.
+
+```{r}
+dt_winequality<-mutate(dt_winequality, quality_class = ifelse(quality >=7 , "good", "not good"))
+```
+
 
 ## 4.2 - Comprobación de la normalidad y homogeneidad de la varianza
 
