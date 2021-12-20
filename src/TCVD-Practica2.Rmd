@@ -14,6 +14,9 @@ output:
 lang: es
 ---
 
+******
+# 0- Carga de librerias
+******
 > Antes de empezar cargamos todas las librerías necesarias.
 
 ```{r}
@@ -32,6 +35,25 @@ if (!require('skimr')) install.packages('skimr'); library ('skimr')
 if (!require('corrplot')) install.packages('corrplot'); library('corrplot')
 # https://cran.r-project.org/web/packages/nortest/index.html
 if (!require('nortest')) install.packages('nortest'); library ('nortest')
+# https://cran.r-project.org/web/packages/stats/index.html
+if (!require('stats')) install.packages('stats'); library('stats')
+# https://cran.r-project.org/web/packages/faraway/index.html
+if (!require('faraway')) install.packages('faraway'); library('faraway')
+# https://cran.r-project.org/web/packages/ResourceSelection/index.html
+if (!require('ResourceSelection')) install.packages('ResourceSelection'); library('ResourceSelection')
+# https://cran.r-project.org/web/packages/pROC/index.html
+if (!require('pROC')) install.packages('pROC'); library('pROC')
+
+# https://cran.r-project.org/web/packages/factoextra/index.html
+if (!require('factoextra')) install.packages('factoextra'); library('factoextra')
+
+if(!require(C50)){
+    install.packages('C50',repos='http://cran.es.r-project.org')
+    require(C50)
+}
+if(!require('caret')) install.packages('caret', repos='http://cran.us.r-project.org');library('caret')
+if(!require('xgboost')) install.packages('xgboost',repos='http://cran.us.r-project.org');library('xgboost')
+if(!require('arules')) install.packages('arules', repos='http://cran.us.r-project.org');library('arules')
 ```
 
 ******
@@ -211,8 +233,8 @@ boxplot(dt_winequality$alcohol[dt_winequality$type=="red"],
 > Diagrama de caja para la variable `quality`.
 
 ```{r}
-boxplot(dt_winequality$quality[dt_winequality$type=="red"],
-        dt_winequality$quality[dt_winequality$type=="white"],
+boxplot(dt_red_wines$quality,
+        dt_white_wines$quality,
         main="quality", names=c("red", "white"))
 ```
 
@@ -221,6 +243,8 @@ boxplot(dt_winequality$quality[dt_winequality$type=="red"],
 ******
 
 ## 4.1 - Selección del grupo de datos que se quiere analizar
+
+### 4.1.1 - Correlación de variables 
 
 > Se mira la correlación entre variables explicativas para ver si es descartable alguna de ellas.
 
@@ -249,6 +273,67 @@ La variable de respuestas seleccionada es "quality" y es aquella para que se va 
 dt_winequality<-mutate(dt_winequality, quality_class = ifelse(quality >=7 , "good", "not good"))
 ```
 
+### 4.1.2 - Reducción de la dimensionalidad (PCA)
+
+>Se aplica el algoritmo PCA para obtener las componentes principales y plantear una reducción de la dimensionalidad del problema.
+
+
+```{r}
+pca<- prcomp(dt_winequality.corr,scale=TRUE)
+
+```
+
+> El aporte de cada una de las variables a las componentes principales es el siguiente:
+```{r}
+pca$rotation
+```
+> Las desviaciones standard de cada una de las componentes principales puede ser obtenida del siguiente modo:
+
+```{r}
+pca$sdev
+```
+> A partir de las desviaciones standard se obtienen las varianzas y se divide por la suma de varianzas para obtener la proporcion de varianza que aportan cada una de las componentes principales. 
+```{r}
+prop_varianza <- pca$sdev^2 / sum(pca$sdev^2)
+prop_varianza
+```
+
+> Se representa de manera gráfica el aporte de las diez componentes principales a la varianza:
+
+```{r}
+fviz_eig(pca,xlab="Componente principal",ylab="Porcentaje de varianza explicada",main="",ncp=10)
+```
+
+> También se representa de manera gráfica la descomposición de cada una de las variables predictoras en las dos componentes principales:
+
+```{r}
+fviz_pca_var(pca,
+             col.var = "contrib", # Color by contributions to the PC
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             repel = TRUE     # Avoid text overlapping
+             )
+```
+
+> Se calcula la proporción de varianza acumulada de las componentes principales:
+```{r}
+prop_varianza_acum <- cumsum(prop_varianza)
+prop_varianza_acum
+```
+
+> Se hace una representación gráfica de la proporción de varianza acumulada que muestra a partir de que componente principal se vuelve despreciable el aporte de una nueva componente principal. Ya en los datos anteriores se observaba que a partir de la sexta componente principal ya se había realizado mas de un 98% del aporte y ahora se ve expresado de manera gráfica.
+
+```{r}
+ggplot(data = data.frame(prop_varianza_acum, pc = 1:11),
+       aes(x = pc, y = prop_varianza_acum, group = 1)) +
+  geom_point() +
+  geom_line() +
+  theme_bw() +
+  labs(x = "Componente principal",
+       y = "Prop. varianza explicada acumulada")
+```
+
+> Tras estudio de las componentes principales se llega a la conclusión para explicar un grado importante de la varianza p.e. un 80% se necesitarí hasta 6 componentes principales. Además se observa que el aporte de cada una de las variables explicativas a las componentes principales está muy distribuido. Debido al reducido numero de variables explicativas y a lo distribuida que está la varianza entre ellas se decide mantener todas ellas en la obtención de un modelo supervisado.
+
 
 ## 4.2 - Comprobación de la normalidad y homogeneidad de la varianza
 
@@ -263,6 +348,87 @@ var.test(dt_red_wines$quality,dt_white_wines$quality)
 
 
 ## 4.3 - Pruebas estadísticas
+
+### 4.3.1 - Contraste de hipotesis
+> Se realiza un contraste de hipotesis sobre de las medias de calidad de vino blanco y tinto para ver si son iguales o diferentes.
+
+H0: \(\mu_{red} = \mu_{white}\)
+
+H1: \(\mu_{red} \neq \mu_{white}\)
+
+> Se trata de un contraste de dos muestras de varianzas desconocidas, pero iguales. Esto implica aplicar T-test para la realización del contraste de hipótesis.
+
+```{r}
+t.test(dt_red_wines$quality,dt_white_wines$quality,alternative="two.sided", var.equal=TRUE)
+
+```
+
+>Se puede observar que realmente hay una diferencia en las medias de calidad al ser el p-value mucho menor que el valor de significancia de 0.05 y ser por tanto rechazable la hipotesis nula. Las medias de calidad del vino tinto y del blanco son significativamente diferentes desde un punto de vista estadístico.
+
+### 4.3.2 - Modelado y evaluación de algoritmos Predictivos 
+
+#### 4.3.2.1 - Con variable respuesta categórica
+
+##### 4.3.2.1.1 - Partición en conjuntos de entrenamiento y test 
+```{r}
+set.seed(3456)
+trainIndex <- createDataPartition(dt_winequality$quality_class, p = .7, 
+                                  list = FALSE, 
+                                  times = 1)
+
+dt_winequality.data.train <- dt_winequality[ trainIndex,]
+dt_winequality.data.test  <- dt_winequality[-trainIndex,]
+```
+
+##### 4.3.2.1.2 - Modelado y evaluación C50
+
+> Se obtiene el modelo C50 con poda a partir del conjunto de entrenamiento
+
+```{r}
+
+dt_winequality.data.train.X<-dt_winequality.data.train%>%select(-c(quality,type,quality_class))
+dt_winequality.data.train.Y<-as.factor(dt_winequality.data.train$quality_class)
+model.C50 <- C50::C5.0(dt_winequality.data.train.X,dt_winequality.data.train.Y)
+#summary(model.C50)
+
+```
+
+> Se evalua la precisión del modelo C50 sobre el conjunto de test
+
+```{r}
+
+
+dt_winequality.data.test.X<-dt_winequality.data.test%>%select(-c(quality,type,quality_class))
+dt_winequality.data.test.Y<-as.factor(dt_winequality.data.test$quality_class)
+predicted_model <- predict(model.C50, dt_winequality.data.test.X, type="class" )
+print(sprintf("La precisión del árbol es: %.4f %%",100*sum(predicted_model == dt_winequality.data.test.Y) / length(predicted_model)))
+```
+
+> Se repite el proceso de obtención del modelo, pero ahora sin poda
+
+```{r}
+model.C50.no.prune <- C50::C5.0(dt_winequality.data.train.X,dt_winequality.data.train.Y,control=C5.0Control(noGlobalPruning=TRUE))
+# summary(model.C50.no.prune)
+
+
+```
+
+> Se evalua evalua la precisión del modelo sin poda sobre el conjunto de test y se observa que se obtiene una precisión ligeramente menor.
+
+```{r}
+
+predicted_model <- predict(model.C50.no.prune, dt_winequality.data.test.X, type="class" )
+print(sprintf("La precisión del árbol es: %.4f %%",100*sum(predicted_model == dt_winequality.data.test.Y) / length(predicted_model)))
+
+```
+
+
+#### 4.3.2.2 - Con variable respuesta numérica
+##### 4.3.2.2.1 - Regresión lineal
+
+
+
+
 
 ******
 # 5- Representación de los resultados
