@@ -85,6 +85,8 @@ if(!require('arules')) install.packages('arules', repos='http://cran.us.r-projec
 
 > * ¿Qué propiedades fisicoquímicas hacen que un vino (tinto y/o blanco) sea bueno?
 
+
+
 ******
 # 2- Integración y selección de los datos de interés
 ******
@@ -125,6 +127,10 @@ dim(dt_winequality)
 
 > Los resultados muestran que los datos (6497 observaciones y 13 variables) se han integrado correctamente.
 
+
+```{r}
+skimr::skim(dt_winequality)
+```
 ******
 # 3- Limpieza de datos
 ******
@@ -332,7 +338,7 @@ ggplot(data = data.frame(prop_varianza_acum, pc = 1:11),
        y = "Prop. varianza explicada acumulada")
 ```
 
-> Tras estudio de las componentes principales se llega a la conclusión para explicar un grado importante de la varianza p.e. un 80% se necesitarí hasta 6 componentes principales. Además se observa que el aporte de cada una de las variables explicativas a las componentes principales está muy distribuido. Debido al reducido numero de variables explicativas y a lo distribuida que está la varianza entre ellas se decide mantener todas ellas en la obtención de un modelo supervisado.
+> Tras estudio de las componentes principales se llega a la conclusión para explicar un grado importante de la varianza p.e. un 80% se necesitaría hasta 6 componentes principales. Además se observa que el aporte de cada una de las variables explicativas a las componentes principales está muy distribuido. Debido al reducido numero de variables explicativas y a lo distribuida que está la varianza entre ellas se decide mantener todas ellas en la obtención de un modelo supervisado.
 
 
 ## 4.2 - Comprobación de la normalidad y homogeneidad de la varianza
@@ -363,7 +369,7 @@ t.test(dt_red_wines$quality,dt_white_wines$quality,alternative="two.sided", var.
 
 ```
 
->Se puede observar que realmente hay una diferencia en las medias de calidad al ser el p-value mucho menor que el valor de significancia de 0.05 y ser por tanto rechazable la hipotesis nula. Las medias de calidad del vino tinto y del blanco son significativamente diferentes desde un punto de vista estadístico.
+>Se puede observar que realmente hay una diferencia en las medias de calidad entre tipos de vino al ser el p-value mucho menor que el valor de significancia de 0.05 y ser por tanto rechazable la hipotesis nula. Las medias de calidad del vino tinto y del blanco son significativamente diferentes desde un punto de vista estadístico.
 
 ### 4.3.2 - Modelado y evaluación de algoritmos Predictivos 
 
@@ -422,9 +428,14 @@ print(sprintf("La precisión del árbol es: %.4f %%",100*sum(predicted_model == 
 
 ```
 
+##### 4.3.2.2.3 - Otro modelo??????
+
+##### 4.3.2.2.3 - Comparativa de modelos
 
 #### 4.3.2.2 - Con variable respuesta numérica
 ##### 4.3.2.2.1 - Regresión lineal
+##### 4.3.2.2.1 - ????
+##### 4.3.2.2.3 - Comparativa de modelos
 
 
 
