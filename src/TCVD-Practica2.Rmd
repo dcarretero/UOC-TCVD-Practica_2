@@ -151,97 +151,84 @@ plot_intro(dt_winequality)
 > Diagrama de caja para la variable `fixed.acidity`.
 
 ```{r}
-boxplot(dt_winequality$fixed.acidity[dt_winequality$type=="red"],
-        dt_winequality$fixed.acidity[dt_winequality$type=="white"],
-        main="fixed.acidity", names=c("red", "white"))
+boxplot(dt_winequality$fixed.acidity, main="fixed.acidity", names=c("red & white"))
+boxplot.stats(dt_winequality$fixed.acidity, coef = 3)
 ```
 
 > Diagrama de caja para la variable `volatile.acidity`.
 
 ```{r}
-boxplot(dt_winequality$volatile.acidity[dt_winequality$type=="red"],
-        dt_winequality$volatile.acidity[dt_winequality$type=="white"],
-        main="volatile.acidity", names=c("red", "white"))
+boxplot(dt_winequality$volatile.acidity, main="volatile.acidity", names=c("red & white"))
+boxplot.stats(dt_winequality$volatile.acidity, coef = 3)
 ```
 
 > Diagrama de caja para la variable `citric.acid`.
 
 ```{r}
-boxplot(dt_winequality$citric.acid[dt_winequality$type=="red"],
-        dt_winequality$citric.acid[dt_winequality$type=="white"],
-        main="citric.acid", names=c("red", "white"))
+boxplot(dt_winequality$citric.acid, main="citric.acid", names=c("red & white"))
+boxplot.stats(dt_winequality$citric.acid, coef = 3)
 ```
 
 > Diagrama de caja para la variable `residual.sugar`.
 
 ```{r}
-boxplot(dt_winequality$residual.sugar[dt_winequality$type=="red"],
-        dt_winequality$residual.sugar[dt_winequality$type=="white"],
-        main="residual.sugar", names=c("red", "white"))
+boxplot(dt_winequality$residual.sugar, main="residual.sugar", names=c("red & white"))
+boxplot.stats(dt_winequality$residual.sugar, coef = 3)
 ```
 
 > Diagrama de caja para la variable `chlorides`.
 
 ```{r}
-boxplot(dt_winequality$chlorides[dt_winequality$type=="red"],
-        dt_winequality$chlorides[dt_winequality$type=="white"],
-        main="chlorides", names=c("red", "white"))
+boxplot(dt_winequality$chlorides, main="chlorides", names=c("red & white"))
+boxplot.stats(dt_winequality$chlorides, coef = 3)
 ```
 
 > Diagrama de caja para la variable `free.sulfur.dioxide`.
 
 ```{r}
-boxplot(dt_winequality$free.sulfur.dioxide[dt_winequality$type=="red"],
-        dt_winequality$free.sulfur.dioxide[dt_winequality$type=="white"],
-        main="free.sulfur.dioxide", names=c("red", "white"))
+boxplot(dt_winequality$free.sulfur.dioxide, main="free.sulfur.dioxide", names=c("red & white"))
+boxplot.stats(dt_winequality$free.sulfur.dioxide, coef = 3)
 ```
 
 > Diagrama de caja para la variable `total.sulfur.dioxide`.
 
 ```{r}
-boxplot(dt_winequality$total.sulfur.dioxide[dt_winequality$type=="red"],
-        dt_winequality$total.sulfur.dioxide[dt_winequality$type=="white"],
-        main="total.sulfur.dioxide", names=c("red", "white"))
+boxplot(dt_winequality$total.sulfur.dioxide, main="total.sulfur.dioxide", names=c("red & white"))
+boxplot.stats(dt_winequality$total.sulfur.dioxide, coef = 3)
 ```
 
 > Diagrama de caja para la variable `density`.
 
 ```{r}
-boxplot(dt_winequality$density[dt_winequality$type=="red"],
-        dt_winequality$density[dt_winequality$type=="white"],
-        main="density", names=c("red", "white"))
+boxplot(dt_winequality$density, main="density", names=c("red & white"))
+boxplot.stats(dt_winequality$density, coef = 3)
 ```
 
 > Diagrama de caja para la variable `pH`.
 
 ```{r}
-boxplot(dt_winequality$pH[dt_winequality$type=="red"],
-        dt_winequality$pH[dt_winequality$type=="white"],
-        main="pH", names=c("red", "white"))
+boxplot(dt_winequality$pH, main="pH", names=c("red & white"))
+boxplot.stats(dt_winequality$pH, coef = 3)
 ```
 
 > Diagrama de caja para la variable `sulphates`.
 
 ```{r}
-boxplot(dt_winequality$sulphates[dt_winequality$type=="red"],
-        dt_winequality$sulphates[dt_winequality$type=="white"],
-        main="sulphates", names=c("red", "white"))
+boxplot(dt_winequality$sulphates, main="sulphates", names=c("red & white"))
+boxplot.stats(dt_winequality$sulphates, coef = 3)
 ```
 
 > Diagrama de caja para la variable `alcohol`.
 
 ```{r}
-boxplot(dt_winequality$alcohol[dt_winequality$type=="red"],
-        dt_winequality$alcohol[dt_winequality$type=="white"],
-        main="alcohol", names=c("red", "white"))
+boxplot(dt_winequality$alcohol, main="alcohol", names=c("red & white"))
+boxplot.stats(dt_winequality$alcohol, coef = 3)
 ```
 
 > Diagrama de caja para la variable `quality`.
 
 ```{r}
-boxplot(dt_red_wines$quality,
-        dt_white_wines$quality,
-        main="quality", names=c("red", "white"))
+boxplot(dt_winequality$quality, main="quality", names=c("red & white"))
 ```
 
 ******
