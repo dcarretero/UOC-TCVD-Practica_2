@@ -152,77 +152,242 @@ plot_intro(dt_winequality)
 
 ```{r}
 boxplot(dt_winequality$fixed.acidity, main="fixed.acidity", names=c("red & white"))
+```
+
+> Utilizamos la función `boxplot.stats()` con coeficiente 3 para calcular el lower y upper whiskers.
+
+```{r}
+box_plot_results<-boxplot.stats(dt_winequality$fixed.acidity, coef = 3)
 boxplot.stats(dt_winequality$fixed.acidity, coef = 3)
+
+lower_whisker<-box_plot_results$stats[1]
+upper_whisker<-box_plot_results$stats[5]
+```
+
+> Usamos el lower y upper whiskers para imputar el valor de la media a nuestros valores extremos.
+
+```{r}
+dt_winequality$fixed.acidity[which(dt_winequality$fixed.acidity < lower_whisker | dt_winequality$fixed.acidity > upper_whisker)] <- mean(dt_winequality$fixed.acidity, na.rm = TRUE)
 ```
 
 > Diagrama de caja para la variable `volatile.acidity`.
 
 ```{r}
 boxplot(dt_winequality$volatile.acidity, main="volatile.acidity", names=c("red & white"))
+```
+
+> Utilizamos la función `boxplot.stats()` con coeficiente 3 para calcular el lower y upper whiskers.
+
+```{r}
+box_plot_results<-boxplot.stats(dt_winequality$volatile.acidity, coef = 3)
 boxplot.stats(dt_winequality$volatile.acidity, coef = 3)
+
+lower_whisker<-box_plot_results$stats[1]
+upper_whisker<-box_plot_results$stats[5]
+```
+
+> Usamos el lower y upper whiskers para imputar el valor de la media a nuestros valores extremos.
+
+```{r}
+dt_winequality$volatile.acidity[which(dt_winequality$volatile.acidity < lower_whisker | dt_winequality$volatile.acidity > upper_whisker)] <- mean(dt_winequality$volatile.acidity, na.rm = TRUE)
 ```
 
 > Diagrama de caja para la variable `citric.acid`.
 
 ```{r}
 boxplot(dt_winequality$citric.acid, main="citric.acid", names=c("red & white"))
+```
+
+> Utilizamos la función `boxplot.stats()` con coeficiente 3 para calcular el lower y upper whiskers.
+
+```{r}
+box_plot_results<-boxplot.stats(dt_winequality$citric.acid, coef = 3)
 boxplot.stats(dt_winequality$citric.acid, coef = 3)
+
+lower_whisker<-box_plot_results$stats[1]
+upper_whisker<-box_plot_results$stats[5]
+```
+
+> Usamos el lower y upper whiskers para imputar el valor de la media a nuestros valores extremos.
+
+```{r}
+dt_winequality$citric.acid[which(dt_winequality$citric.acid < lower_whisker | dt_winequality$citric.acid > upper_whisker)] <- mean(dt_winequality$citric.acid, na.rm = TRUE)
 ```
 
 > Diagrama de caja para la variable `residual.sugar`.
 
 ```{r}
 boxplot(dt_winequality$residual.sugar, main="residual.sugar", names=c("red & white"))
+```
+
+> Utilizamos la función `boxplot.stats()` con coeficiente 3 para calcular el lower y upper whiskers.
+
+```{r}
+box_plot_results<-boxplot.stats(dt_winequality$residual.sugar, coef = 3)
 boxplot.stats(dt_winequality$residual.sugar, coef = 3)
+
+lower_whisker<-box_plot_results$stats[1]
+upper_whisker<-box_plot_results$stats[5]
+```
+
+> Usamos el lower y upper whiskers para imputar el valor de la media a nuestros valores extremos.
+
+```{r}
+dt_winequality$residual.sugar[which(dt_winequality$residual.sugar < lower_whisker | dt_winequality$residual.sugar > upper_whisker)] <- mean(dt_winequality$residual.sugar, na.rm = TRUE)
 ```
 
 > Diagrama de caja para la variable `chlorides`.
 
 ```{r}
 boxplot(dt_winequality$chlorides, main="chlorides", names=c("red & white"))
+```
+
+> Utilizamos la función `boxplot.stats()` con coeficiente 3 para calcular el lower y upper whiskers.
+
+```{r}
+box_plot_results<-boxplot.stats(dt_winequality$chlorides, coef = 3)
 boxplot.stats(dt_winequality$chlorides, coef = 3)
+
+lower_whisker<-box_plot_results$stats[1]
+upper_whisker<-box_plot_results$stats[5]
+```
+
+> Usamos el lower y upper whiskers para imputar el valor de la media a nuestros valores extremos.
+
+```{r}
+dt_winequality$chlorides[which(dt_winequality$chlorides < lower_whisker | dt_winequality$chlorides > upper_whisker)] <- mean(dt_winequality$chlorides, na.rm = TRUE)
 ```
 
 > Diagrama de caja para la variable `free.sulfur.dioxide`.
 
 ```{r}
 boxplot(dt_winequality$free.sulfur.dioxide, main="free.sulfur.dioxide", names=c("red & white"))
+```
+
+> Utilizamos la función `boxplot.stats()` con coeficiente 3 para calcular el lower y upper whiskers.
+
+```{r}
+box_plot_results<-boxplot.stats(dt_winequality$free.sulfur.dioxide, coef = 3)
 boxplot.stats(dt_winequality$free.sulfur.dioxide, coef = 3)
+
+lower_whisker<-box_plot_results$stats[1]
+upper_whisker<-box_plot_results$stats[5]
+```
+
+> Usamos el lower y upper whiskers para imputar el valor de la media a nuestros valores extremos.
+
+```{r}
+dt_winequality$free.sulfur.dioxide[which(dt_winequality$free.sulfur.dioxide < lower_whisker | dt_winequality$free.sulfur.dioxide > upper_whisker)] <- mean(dt_winequality$free.sulfur.dioxide, na.rm = TRUE)
 ```
 
 > Diagrama de caja para la variable `total.sulfur.dioxide`.
 
 ```{r}
 boxplot(dt_winequality$total.sulfur.dioxide, main="total.sulfur.dioxide", names=c("red & white"))
+```
+
+> Utilizamos la función `boxplot.stats()` con coeficiente 3 para calcular el lower y upper whiskers.
+
+```{r}
+box_plot_results<-boxplot.stats(dt_winequality$total.sulfur.dioxide, coef = 3)
 boxplot.stats(dt_winequality$total.sulfur.dioxide, coef = 3)
+
+lower_whisker<-box_plot_results$stats[1]
+upper_whisker<-box_plot_results$stats[5]
+```
+
+> Usamos el lower y upper whiskers para imputar el valor de la media a nuestros valores extremos.
+
+```{r}
+dt_winequality$total.sulfur.dioxide[which(dt_winequality$total.sulfur.dioxide < lower_whisker | dt_winequality$total.sulfur.dioxide > upper_whisker)] <- mean(dt_winequality$total.sulfur.dioxide, na.rm = TRUE)
 ```
 
 > Diagrama de caja para la variable `density`.
 
 ```{r}
 boxplot(dt_winequality$density, main="density", names=c("red & white"))
+```
+
+> Utilizamos la función `boxplot.stats()` con coeficiente 3 para calcular el lower y upper whiskers.
+
+```{r}
+box_plot_results<-boxplot.stats(dt_winequality$density, coef = 3)
 boxplot.stats(dt_winequality$density, coef = 3)
+
+lower_whisker<-box_plot_results$stats[1]
+upper_whisker<-box_plot_results$stats[5]
+```
+
+> Usamos el lower y upper whiskers para imputar el valor de la media a nuestros valores extremos.
+
+```{r}
+dt_winequality$density[which(dt_winequality$density < lower_whisker | dt_winequality$density > upper_whisker)] <- mean(dt_winequality$density, na.rm = TRUE)
 ```
 
 > Diagrama de caja para la variable `pH`.
 
 ```{r}
 boxplot(dt_winequality$pH, main="pH", names=c("red & white"))
+```
+
+> Utilizamos la función `boxplot.stats()` con coeficiente 3 para calcular el lower y upper whiskers.
+
+```{r}
+box_plot_results<-boxplot.stats(dt_winequality$pH, coef = 3)
 boxplot.stats(dt_winequality$pH, coef = 3)
+
+lower_whisker<-box_plot_results$stats[1]
+upper_whisker<-box_plot_results$stats[5]
+```
+
+> Usamos el lower y upper whiskers para imputar el valor de la media a nuestros valores extremos.
+
+```{r}
+dt_winequality$pH[which(dt_winequality$pH < lower_whisker | dt_winequality$pH > upper_whisker)] <- mean(dt_winequality$pH, na.rm = TRUE)
 ```
 
 > Diagrama de caja para la variable `sulphates`.
 
 ```{r}
 boxplot(dt_winequality$sulphates, main="sulphates", names=c("red & white"))
+```
+
+> Utilizamos la función `boxplot.stats()` con coeficiente 3 para calcular el lower y upper whiskers.
+
+```{r}
+box_plot_results<-boxplot.stats(dt_winequality$sulphates, coef = 3)
 boxplot.stats(dt_winequality$sulphates, coef = 3)
+
+lower_whisker<-box_plot_results$stats[1]
+upper_whisker<-box_plot_results$stats[5]
+```
+
+> Usamos el lower y upper whiskers para imputar el valor de la media a nuestros valores extremos.
+
+```{r}
+dt_winequality$sulphates[which(dt_winequality$sulphates < lower_whisker | dt_winequality$sulphates > upper_whisker)] <- mean(dt_winequality$sulphates, na.rm = TRUE)
 ```
 
 > Diagrama de caja para la variable `alcohol`.
 
 ```{r}
 boxplot(dt_winequality$alcohol, main="alcohol", names=c("red & white"))
+```
+
+> Utilizamos la función `boxplot.stats()` con coeficiente 3 para calcular el lower y upper whiskers.
+
+```{r}
+box_plot_results<-boxplot.stats(dt_winequality$alcohol, coef = 3)
 boxplot.stats(dt_winequality$alcohol, coef = 3)
+
+lower_whisker<-box_plot_results$stats[1]
+upper_whisker<-box_plot_results$stats[5]
+```
+
+> Usamos el lower y upper whiskers para imputar el valor de la media a nuestros valores extremos.
+
+```{r}
+dt_winequality$alcohol[which(dt_winequality$alcohol < lower_whisker | dt_winequality$alcohol > upper_whisker)] <- mean(dt_winequality$alcohol, na.rm = TRUE)
 ```
 
 > Diagrama de caja para la variable `quality`.
