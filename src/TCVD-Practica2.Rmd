@@ -319,7 +319,7 @@ boxplot(dt_winequality$quality, main="quality", names=c("red & white"))
 ```
 
 ******
-# 4- Análisis de datos
+# 4- Análisis de datos y representación de resultados
 ******
 
 ## 4.1 - Selección del grupo de datos que se quiere analizar
@@ -529,15 +529,10 @@ bwplot(results)
 ```
 
 
-```{r}
-# dot plots of results
-dotplot(results)
-```
-
-Por lo que se puede observar el mejor modelo parece ser el GLM, aunque si se quisiera ver de una manera mas purista si las diferencias mostradas son estadisticamente significativas se debería hacer un contraste de hipotesis entre ellas. 
+Por lo que se puede observar el mejor modelo parece ser el GLM, aunque si se quisiera ver de una manera mas purista si las diferencias mostradas son estadisticamente significativas se debería hacer un test estadístico sobre las métricas obtenidas. 
 
 
-### 4.3.3. Prediccion con algoritmo GLM seleccionado sobre el conjunto de test
+### 4.3.3 - Prediccion con algoritmo GLM seleccionado sobre el conjunto de test
 ```{r}
 dt_winequality.data.test.X<-dt_winequality.data.test%>%dplyr::select(-c(quality_class))
 dt_winequality.data.test.Y<-as.factor((dt_winequality.data.test%>%dplyr::select(c(quality_class)))$quality_class)
@@ -558,7 +553,7 @@ plot.roc(as.numeric(predicted_GLM),as.numeric(dt_winequality.data.test.Y),print.
 ```
 
 ******
-# 5- Representación de los resultados
+# 5- Conclusiones
 ******
 
 TO DO
