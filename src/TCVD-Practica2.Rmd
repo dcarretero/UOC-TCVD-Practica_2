@@ -537,29 +537,24 @@ dotplot(results)
 Por lo que se puede observar el mejor modelo parece ser el GLM, aunque si se quisiera ver de una manera mas purista si las diferencias mostradas son estadisticamente significativas se debería hacer un contraste de hipotesis entre ellas. 
 
 
-### 4.1.1. Prediccion GLM
+### 4.3.3. Prediccion con algoritmo GLM seleccionado sobre el conjunto de test
 ```{r}
-dt_winequality.data.test.X<-dt_winequality.data.test%>%select(-c(quality_class))
-dt_winequality.data.test.Y<-dt_winequality.data.test%>%select(c(quality_class))
-predicted_GLM<- predict(modelGLM, dt_winequality.data.test)
+dt_winequality.data.test.X<-dt_winequality.data.test%>%dplyr::select(-c(quality_class))
+dt_winequality.data.test.Y<-as.factor((dt_winequality.data.test%>%dplyr::select(c(quality_class)))$quality_class)
+predicted_GLM<- predict(modelGLM, dt_winequality.data.test.X)
 ```
 
 
-### 4.1.2.Matriz confusión- NAIVE BAYES
+### 4.3.4 - Matriz confusión
 ```{r}
-confusionMatrix(reference = df_test$Class, data = predictedNB, mode='everything', positive='positive')
+confusionMatrix(reference = dt_winequality.data.test.Y, data = predicted_GLM, mode='everything', positive='good')
 ```
 
-### 4.1.3. AUC- NAIVE BAYES
+### 4.3.5. ROC y AUC
 ```{r}
-auc(roc(predictedNB,df_test$Class))
-```
-### 4.1.4. Accuracy y Kapppa - NAIVE BAYES
+plot.roc(as.numeric(predicted_GLM),as.numeric(dt_winequality.data.test.Y),print.auc=TRUE)
 
-```{r}
-postResample(predictedNB, df_test$Class)
 ```
-
 
 ******
 # 5- Representación de los resultados
