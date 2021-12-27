@@ -46,17 +46,19 @@ if (!require('faraway')) install.packages('faraway'); library('faraway')
 if (!require('ResourceSelection')) install.packages('ResourceSelection'); library('ResourceSelection')
 # https://cran.r-project.org/web/packages/pROC/index.html
 if (!require('pROC')) install.packages('pROC'); library('pROC')
-
 # https://cran.r-project.org/web/packages/factoextra/index.html
 if (!require('factoextra')) install.packages('factoextra'); library('factoextra')
-
 if(!require(C50)){
     install.packages('C50',repos='http://cran.es.r-project.org')
     require(C50)
 }
+if(!require('klaR')) install.packages('klaR', repos='http://cran.us.r-project.org');library('klaR')
+if(!require('kernlab')) install.packages('kernlab', repos='http://cran.us.r-project.org');library('kernlab')
 if(!require('caret')) install.packages('caret', repos='http://cran.us.r-project.org');library('caret')
 if(!require('xgboost')) install.packages('xgboost',repos='http://cran.us.r-project.org');library('xgboost')
 if(!require('arules')) install.packages('arules', repos='http://cran.us.r-project.org');library('arules')
+
+
 ```
 
 ******
@@ -327,7 +329,7 @@ boxplot(dt_winequality$quality, main="quality", names=c("red & white"))
 > Se mira la correlación entre variables explicativas para ver si es descartable alguna de ellas.
 
 ```{r}
-dt_winequality.corr <-dt_winequality%>%select(-c(quality,type))
+dt_winequality.corr <- dt_winequality %>% dplyr::select(!c(quality,type))
 dt_winequality.mat.corr <- cor(dt_winequality.corr,method =  "pearson", use="pairwise.complete.obs")
 col <- colorRampPalette(c("#BB4444", "#EE9988", "#FFFFFF", "#77AADD","#4477AA"))
 
@@ -397,10 +399,13 @@ fviz_pca_var(pca,
 ```
 
 > Se calcula la proporción de varianza acumulada de las componentes principales:
+
 ```{r}
 prop_varianza_acum <- cumsum(prop_varianza)
 prop_varianza_acum
+
 ```
+
 
 > Se hace una representación gráfica de la proporción de varianza acumulada que muestra a partir de que componente principal se vuelve despreciable el aporte de una nueva componente principal. Ya en los datos anteriores se observaba que a partir de la sexta componente principal ya se había realizado mas de un 98% del aporte y ahora se ve expresado de manera gráfica.
 
@@ -449,84 +454,112 @@ t.test(dt_red_wines$quality,dt_white_wines$quality,alternative="two.sided", var.
 
 ### 4.3.2 - Modelado y evaluación de algoritmos Predictivos 
 
-#### 4.3.2.1 - Con variable respuesta categórica
 
-##### 4.3.2.1.1 - Partición en conjuntos de entrenamiento y test 
+#### 4.3.2.1 - Partición en conjuntos de entrenamiento y test 
 ```{r}
 set.seed(3456)
 trainIndex <- createDataPartition(dt_winequality$quality_class, p = .7, 
                                   list = FALSE, 
                                   times = 1)
 
-dt_winequality.data.train <- dt_winequality[ trainIndex,]
-dt_winequality.data.test  <- dt_winequality[-trainIndex,]
+dt_winequality.data.train <-dt_winequality[trainIndex,]%>%dplyr::select(-c(quality))
+dt_winequality.data.test  <- dt_winequality[-trainIndex,]%>%dplyr::select(-c(quality))
 ```
 
-##### 4.3.2.1.2 - Modelado y evaluación C50
+#### 4.3.2.2 - Tuning básico de parametros configurando cross-validation
+```{r}
+fitControl <- trainControl(## 10-fold CV
+                           method = "repeatedcv",
+                           number = 10,
+                           ## repeated ten times
+                           repeats = 10)
+```
 
-> Se obtiene el modelo C50 con poda a partir del conjunto de entrenamiento
+
+#### 4.3.2.3. - Obtención de modelos 
+
+#### 4.3.2.3.1 -  CART
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE}
+
+
+modelRPART <- train(quality_class ~ ., data = dt_winequality.data.train, 
+                 method = "rpart", 
+                 trControl = fitControl)
+```
+
+
+#### 4.3.2.3.2 -  KNN
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, paged.print=TRUE}
+
+
+modelKNN<- train(quality_class ~ ., data = dt_winequality.data.train, 
+                 method = "knn", 
+                 trControl = fitControl)
+
+modelKNN
+```
+#### 4.3.2.3.2 -  GENERALIZED LINEAR MODEL
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, paged.print=TRUE}
+
+
+modelGLM<- train(quality_class ~ ., data = dt_winequality.data.train, 
+                 method = "glm", 
+                 trControl = fitControl)
+
+modelGLM
+```
+
+#### 4.3.2.3. - Comparativa de modelos
+
+> Para comparar los diferentes modelos, al habarse obtenido todos a partir del paquete Caret se puede usar la función resamples
 
 ```{r}
+results <- resamples(list(RPART=modelRPART, KNN=modelKNN, GLM=modelGLM))
+# summarize the distributions
+summary(results)
 
-dt_winequality.data.train.X<-dt_winequality.data.train%>%select(-c(quality,type,quality_class))
-dt_winequality.data.train.Y<-as.factor(dt_winequality.data.train$quality_class)
-model.C50 <- C50::C5.0(dt_winequality.data.train.X,dt_winequality.data.train.Y)
-#summary(model.C50)
+```
+```{r}
+# boxplots of results
+bwplot(results)
 
 ```
 
-> Se evalua la precisión del modelo C50 sobre el conjunto de test
 
 ```{r}
-
-
-dt_winequality.data.test.X<-dt_winequality.data.test%>%select(-c(quality,type,quality_class))
-dt_winequality.data.test.Y<-as.factor(dt_winequality.data.test$quality_class)
-predicted_model <- predict(model.C50, dt_winequality.data.test.X, type="class" )
-print(sprintf("La precisión del árbol es: %.4f %%",100*sum(predicted_model == dt_winequality.data.test.Y) / length(predicted_model)))
+# dot plots of results
+dotplot(results)
 ```
 
-> Se repite el proceso de obtención del modelo, pero ahora sin poda
+Por lo que se puede observar el mejor modelo parece ser el GLM, aunque si se quisiera ver de una manera mas purista si las diferencias mostradas son estadisticamente significativas se debería hacer un contraste de hipotesis entre ellas. 
+
+
+### 4.1.1. Prediccion GLM
+```{r}
+dt_winequality.data.test.X<-dt_winequality.data.test%>%select(-c(quality_class))
+dt_winequality.data.test.Y<-dt_winequality.data.test%>%select(c(quality_class))
+predicted_GLM<- predict(modelGLM, dt_winequality.data.test)
+```
+
+
+### 4.1.2.Matriz confusión- NAIVE BAYES
+```{r}
+confusionMatrix(reference = df_test$Class, data = predictedNB, mode='everything', positive='positive')
+```
+
+### 4.1.3. AUC- NAIVE BAYES
+```{r}
+auc(roc(predictedNB,df_test$Class))
+```
+### 4.1.4. Accuracy y Kapppa - NAIVE BAYES
 
 ```{r}
-model.C50.no.prune <- C50::C5.0(dt_winequality.data.train.X,dt_winequality.data.train.Y,control=C5.0Control(noGlobalPruning=TRUE))
-# summary(model.C50.no.prune)
-
-
+postResample(predictedNB, df_test$Class)
 ```
 
-> Se evalua evalua la precisión del modelo sin poda sobre el conjunto de test y se observa que se obtiene una precisión ligeramente menor.
-
-```{r}
-
-predicted_model <- predict(model.C50.no.prune, dt_winequality.data.test.X, type="class" )
-print(sprintf("La precisión del árbol es: %.4f %%",100*sum(predicted_model == dt_winequality.data.test.Y) / length(predicted_model)))
-
-```
-
-##### 4.3.2.2.3 - Random Forest
-
-TO DO
-
-##### 4.3.2.2.3 - Comparativa de modelos
-
-TO DO
-
-##### 4.3.2.3 - Con variable respuesta numérica
-
-TO DO
-
-##### 4.3.2.3.1 - Regresión lineal
-
-TO DO
-
-##### 4.3.2.3.1 - Redes neuronales
-
-TO DO
-
-##### 4.3.2.3.3 - Comparativa de modelos
-
-TO DO
 
 ******
 # 5- Representación de los resultados
