@@ -62,7 +62,7 @@ if(!require('arules')) install.packages('arules', repos='http://cran.us.r-projec
 ```
 
 ******
-# 1- Descripción del dataset
+# 1- Descripción del dataset y objetivos
 ******
 
 > Nuestra selección del dataset es: Red Wine Quality de.
@@ -86,9 +86,9 @@ if(!require('arules')) install.packages('arules', repos='http://cran.us.r-projec
   * **alcohol**: el nivel del alcohol.
   * **quality**: la calidad (entre 0 y 9).
 
-> La pregunta que nos planteamos gira entorno a las propiedades y calidad del vino (incluye la comparativa entre diferentes tipos de vinos): 
-
-> * ¿Qué propiedades fisicoquímicas hacen que un vino (tinto y/o blanco) sea bueno?
+> Basicamente nos planteamos dos preguntas a resolver en la práctica planteada con este dataset:
+1) Existen diferencias de calidad entre el vino blanco y el vino tinto
+2) Se puede predecir la calidad del vino a partir de las variables explicativas sin tener en cuenta el tipo de vino (tinto o blanco)
 
 
 
@@ -545,12 +545,13 @@ predicted_GLM<- predict(modelGLM, dt_winequality.data.test.X)
 ```
 
 
-### 4.3.4 - Matriz confusión
+### 4.3.4 - Matriz confusión sobre el conjunto de test
 ```{r}
 confusionMatrix(reference = dt_winequality.data.test.Y, data = predicted_GLM, mode='everything', positive='good')
 ```
 
-### 4.3.5. ROC y AUC
+### 4.3.5. ROC y AUC 
+El valor obtenido de AUC muestra que el modelo es capaz de discriminar de manera adecuada.
 ```{r}
 plot.roc(as.numeric(predicted_GLM),as.numeric(dt_winequality.data.test.Y),print.auc=TRUE)
 
