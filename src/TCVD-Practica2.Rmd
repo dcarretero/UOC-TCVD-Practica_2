@@ -521,13 +521,22 @@ plot.roc(as.numeric(predicted_GLM), as.numeric(dt_winequality.data.test.Y), prin
 ```
 
 ******
-# 5- Conclusiones
+# 5- Conclusiones 
 ******
 
-TO DO
+Se ha mirado la reducción de la dimensionalidad del problema a partir del estudio de correlación de variables y de la aplicación de PCA. 
 
-******
-# 6- Resolución del problema
-******
+Las correlaciones de variables aunque alta en un par de ellas no es excesivamente alta y debido al limitado número de variables se opta por manternerlas en la obtención del modelo.
+En cuanto al estudio de PCA se observa que la varianza de la variable de respuesta está bastante distribuida entre las componentes principales. Para llegar a tener un 80% de la varianza explicada se debería de trabajar con hasta 6 componentes principales. Por ello de nuevo, se opta por la opción de no disminuir el número de variables del problema.
 
-TO DO
+Al principio de la práctica se plantearon dos objetivos :
+
+1) Validar si la calidad del vino tinto y blanco son diferentes
+2) Obtener un modelo que sea capaz de clasificar la calidad del vino en una variable dicotómica good/not good.
+
+Respecto del primer objetivo el contraste de hipotesis comparando las medias de las dos muestras con la consideración de tener varianzas desconocidas, pero iguales, se determina que las medias son diferentes.
+
+Respecto del segundo objetivo se han probado diversos algoritmos ofrecidos por la libreria CARET. Tras comparar las metricas Accuracy y Kappa de los tres algoritmos probados (CART, KNN y GLM) mediante el uso de la función resamples se determina que el algoritmo GLM es el que mejor desempeño tiene. 
+
+Calculando el valor de AUC se determina que el modelo es capaz de discriminar de manera adecuada.
+
