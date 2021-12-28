@@ -3,24 +3,19 @@ title: "Practica 2"
 author: "Tipologia y Ciclo de Vida De Los Datos"
 date: "Diciembre 2021"
 output:
-  word_document:
-    toc: yes
-    toc_depth: '2'
   html_document:
     number_sections: no
     toc: yes
     toc_depth: 2
+  word_document:
+    toc: yes
+    toc_depth: '2'
   pdf_document:
     number_section: no
     toc: yes
     latex_engine: xelatex
 lang: es
 ---
-
-******
-# 0- Carga de librerias
-******
-> Antes de empezar cargamos todas las librerías necesarias.
 
 ```{r include=FALSE}
 # https://cran.r-project.org/web/packages/DataExplorer/index.html
@@ -57,8 +52,6 @@ if(!require('kernlab')) install.packages('kernlab', repos='http://cran.us.r-proj
 if(!require('caret')) install.packages('caret', repos='http://cran.us.r-project.org');library('caret')
 if(!require('xgboost')) install.packages('xgboost',repos='http://cran.us.r-project.org');library('xgboost')
 if(!require('arules')) install.packages('arules', repos='http://cran.us.r-project.org');library('arules')
-
-
 ```
 
 ******
@@ -87,10 +80,8 @@ if(!require('arules')) install.packages('arules', repos='http://cran.us.r-projec
   * **quality**: la calidad (entre 0 y 9).
 
 > Basicamente nos planteamos dos preguntas a resolver en la práctica planteada con este dataset:
-1) Existen diferencias de calidad entre el vino blanco y el vino tinto
-2) Se puede predecir la calidad del vino a partir de las variables explicativas sin tener en cuenta el tipo de vino (tinto o blanco)
-
-
+> * 1) ¿Existen diferencias de calidad entre el vino blanco y el vino tinto?
+> * 2) ¿Se puede predecir la calidad del vino a partir de las variables explicativas sin tener en cuenta el tipo de vino (tinto o blanco)?
 
 ******
 # 2- Integración y selección de los datos de interés
@@ -406,7 +397,6 @@ prop_varianza_acum
 
 ```
 
-
 > Se hace una representación gráfica de la proporción de varianza acumulada que muestra a partir de que componente principal se vuelve despreciable el aporte de una nueva componente principal. Ya en los datos anteriores se observaba que a partir de la sexta componente principal ya se había realizado mas de un 98% del aporte y ahora se ve expresado de manera gráfica.
 
 ```{r}
@@ -421,18 +411,14 @@ ggplot(data = data.frame(prop_varianza_acum, pc = 1:11),
 
 > Tras estudio de las componentes principales se llega a la conclusión para explicar un grado importante de la varianza p.e. un 80% se necesitaría hasta 6 componentes principales. Además se observa que el aporte de cada una de las variables explicativas a las componentes principales está muy distribuido. Debido al reducido numero de variables explicativas y a lo distribuida que está la varianza entre ellas se decide mantener todas ellas en la obtención de un modelo supervisado.
 
-
 ## 4.2 - Comprobación de la normalidad y homogeneidad de la varianza
 
 > Se va a trabajar para el contraste de hipotesis con las medias muestrales, con lo cual al ser una muestra mayor de 30 elementos puede aplicarse el teorema del limite central bajo el cual se supone que dichas medias muestrales siguen una distribución normal.
 En cuanto a la homogeneidad de la varianza de la variable de respuesta "quality" entre el conjunto de vinos tintos y blancos se observa que las varianzas de ambos grupos no puede descartarse la hipotesis nula de que sean varianzas iguales al dar un valor de F que se encuentra dentro del intervalo de confianza.
 
 ```{r}
-
 var.test(dt_red_wines$quality,dt_white_wines$quality)
 ```
-
-
 
 ## 4.3 - Pruebas estadísticas
 
@@ -440,7 +426,6 @@ var.test(dt_red_wines$quality,dt_white_wines$quality)
 > Se realiza un contraste de hipotesis sobre de las medias de calidad de vino blanco y tinto para ver si son iguales o diferentes.
 
 H0: \(\mu_{red} = \mu_{white}\)
-
 H1: \(\mu_{red} \neq \mu_{white}\)
 
 > Se trata de un contraste de dos muestras de varianzas desconocidas, pero iguales. Esto implica aplicar T-test para la realización del contraste de hipótesis.
@@ -454,7 +439,6 @@ t.test(dt_red_wines$quality,dt_white_wines$quality,alternative="two.sided", var.
 
 ### 4.3.2 - Modelado y evaluación de algoritmos Predictivos 
 
-
 #### 4.3.2.1 - Partición en conjuntos de entrenamiento y test 
 ```{r}
 set.seed(3456)
@@ -462,7 +446,7 @@ trainIndex <- createDataPartition(dt_winequality$quality_class, p = .7,
                                   list = FALSE, 
                                   times = 1)
 
-dt_winequality.data.train <-dt_winequality[trainIndex,]%>%dplyr::select(-c(quality))
+dt_winequality.data.train <- dt_winequality[trainIndex,]%>%dplyr::select(-c(quality))
 dt_winequality.data.test  <- dt_winequality[-trainIndex,]%>%dplyr::select(-c(quality))
 ```
 
@@ -475,40 +459,25 @@ fitControl <- trainControl(## 10-fold CV
                            repeats = 10)
 ```
 
-
 #### 4.3.2.3. - Obtención de modelos 
 
 #### 4.3.2.3.1 -  CART
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE}
-
-
-modelRPART <- train(quality_class ~ ., data = dt_winequality.data.train, 
-                 method = "rpart", 
-                 trControl = fitControl)
+modelRPART <- train(quality_class ~ ., data = dt_winequality.data.train, method = "rpart", trControl = fitControl)
+modelRPART
 ```
-
 
 #### 4.3.2.3.2 -  KNN
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE, paged.print=TRUE}
-
-
-modelKNN<- train(quality_class ~ ., data = dt_winequality.data.train, 
-                 method = "knn", 
-                 trControl = fitControl)
-
+modelKNN<- train(quality_class ~ ., data = dt_winequality.data.train, method = "knn", trControl = fitControl)
 modelKNN
 ```
 #### 4.3.2.3.2 -  GENERALIZED LINEAR MODEL
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE, paged.print=TRUE}
-
-
-modelGLM<- train(quality_class ~ ., data = dt_winequality.data.train, 
-                 method = "glm", 
-                 trControl = fitControl)
-
+modelGLM<- train(quality_class ~ ., data = dt_winequality.data.train, method = "glm", trControl = fitControl)
 modelGLM
 ```
 
@@ -521,35 +490,31 @@ results <- resamples(list(RPART=modelRPART, KNN=modelKNN, GLM=modelGLM))
 # summarize the distributions
 summary(results)
 
-```
-```{r}
 # boxplots of results
 bwplot(results)
-
 ```
-
 
 Por lo que se puede observar el mejor modelo parece ser el GLM, aunque si se quisiera ver de una manera mas purista si las diferencias mostradas son estadisticamente significativas se debería hacer un test estadístico sobre las métricas obtenidas. 
 
-
 ### 4.3.3 - Prediccion con algoritmo GLM seleccionado sobre el conjunto de test
+
 ```{r}
 dt_winequality.data.test.X<-dt_winequality.data.test%>%dplyr::select(-c(quality_class))
 dt_winequality.data.test.Y<-as.factor((dt_winequality.data.test%>%dplyr::select(c(quality_class)))$quality_class)
 predicted_GLM<- predict(modelGLM, dt_winequality.data.test.X)
 ```
 
-
 ### 4.3.4 - Matriz confusión sobre el conjunto de test
+
 ```{r}
 confusionMatrix(reference = dt_winequality.data.test.Y, data = predicted_GLM, mode='everything', positive='good')
 ```
 
 ### 4.3.5. ROC y AUC 
+
 El valor obtenido de AUC muestra que el modelo es capaz de discriminar de manera adecuada.
 ```{r}
 plot.roc(as.numeric(predicted_GLM),as.numeric(dt_winequality.data.test.Y),print.auc=TRUE)
-
 ```
 
 ******
