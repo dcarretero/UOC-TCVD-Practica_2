@@ -3,17 +3,17 @@ title: "Practica 2"
 author: "Tipologia y Ciclo de Vida De Los Datos"
 date: "Diciembre 2021"
 output:
-  html_document:
-    number_sections: no
-    toc: yes
-    toc_depth: 2
   word_document:
     toc: yes
-    toc_depth: '2'
+    toc_depth: '3'
   pdf_document:
     number_section: no
     toc: yes
     latex_engine: xelatex
+  html_document:
+    number_sections: no
+    toc: yes
+    toc_depth: 3
 lang: es
 ---
 
@@ -44,13 +44,13 @@ if (!require('pROC')) install.packages('pROC'); library('pROC')
 # https://cran.r-project.org/web/packages/factoextra/index.html
 if (!require('factoextra')) install.packages('factoextra'); library('factoextra')
 if(!require(C50)){
-    install.packages('C50',repos='http://cran.es.r-project.org')
+    install.packages('C50', repos='http://cran.es.r-project.org')
     require(C50)
 }
 if(!require('klaR')) install.packages('klaR', repos='http://cran.us.r-project.org');library('klaR')
 if(!require('kernlab')) install.packages('kernlab', repos='http://cran.us.r-project.org');library('kernlab')
 if(!require('caret')) install.packages('caret', repos='http://cran.us.r-project.org');library('caret')
-if(!require('xgboost')) install.packages('xgboost',repos='http://cran.us.r-project.org');library('xgboost')
+if(!require('xgboost')) install.packages('xgboost', repos='http://cran.us.r-project.org');library('xgboost')
 if(!require('arules')) install.packages('arules', repos='http://cran.us.r-project.org');library('arules')
 ```
 
@@ -148,8 +148,8 @@ boxplot(dt_winequality$fixed.acidity, main="fixed.acidity", names=c("red & white
 Utilizamos la función `boxplot.stats()` con coeficiente 3 para calcular el lower y upper whiskers.
 
 ```{r}
-box_plot_results<-boxplot.stats(dt_winequality$fixed.acidity, coef = 3)
-boxplot.stats(dt_winequality$fixed.acidity, coef = 3)
+box_plot_results<-boxplot.stats(dt_winequality$fixed.acidity, coef=3)
+boxplot.stats(dt_winequality$fixed.acidity, coef=3)
 
 lower_whisker<-box_plot_results$stats[1]
 upper_whisker<-box_plot_results$stats[5]
@@ -168,8 +168,8 @@ Se aplica este mismo tratamiento al resto de variables explicativas.
 # Cálculo para la variable volatile.acidity
 boxplot(dt_winequality$volatile.acidity, main="volatile.acidity", names=c("red & white"))
 
-box_plot_results<-boxplot.stats(dt_winequality$volatile.acidity, coef = 3)
-boxplot.stats(dt_winequality$volatile.acidity, coef = 3)
+box_plot_results<-boxplot.stats(dt_winequality$volatile.acidity, coef=3)
+boxplot.stats(dt_winequality$volatile.acidity, coef=3)
 
 lower_whisker<-box_plot_results$stats[1]
 upper_whisker<-box_plot_results$stats[5]
@@ -182,8 +182,8 @@ dt_winequality$volatile.acidity[which(dt_winequality$volatile.acidity > upper_wh
 # Cálculo para la variable citric.acid
 boxplot(dt_winequality$citric.acid, main="citric.acid", names=c("red & white"))
 
-box_plot_results<-boxplot.stats(dt_winequality$citric.acid, coef = 3)
-boxplot.stats(dt_winequality$citric.acid, coef = 3)
+box_plot_results<-boxplot.stats(dt_winequality$citric.acid, coef=3)
+boxplot.stats(dt_winequality$citric.acid, coef=3)
 
 lower_whisker<-box_plot_results$stats[1]
 upper_whisker<-box_plot_results$stats[5]
@@ -196,8 +196,8 @@ dt_winequality$citric.acid[which(dt_winequality$citric.acid > upper_whisker)]<-u
 # Cálculo para la variable residual.sugar
 boxplot(dt_winequality$residual.sugar, main="residual.sugar", names=c("red & white"))
 
-box_plot_results<-boxplot.stats(dt_winequality$residual.sugar, coef = 3)
-boxplot.stats(dt_winequality$residual.sugar, coef = 3)
+box_plot_results<-boxplot.stats(dt_winequality$residual.sugar, coef=3)
+boxplot.stats(dt_winequality$residual.sugar, coef=3)
 
 lower_whisker<-box_plot_results$stats[1]
 upper_whisker<-box_plot_results$stats[5]
@@ -210,8 +210,8 @@ dt_winequality$residual.sugar[which(dt_winequality$residual.sugar > upper_whiske
 # Cálculo para la variable chlorides
 boxplot(dt_winequality$chlorides, main="chlorides", names=c("red & white"))
 
-box_plot_results<-boxplot.stats(dt_winequality$chlorides, coef = 3)
-boxplot.stats(dt_winequality$chlorides, coef = 3)
+box_plot_results<-boxplot.stats(dt_winequality$chlorides, coef=3)
+boxplot.stats(dt_winequality$chlorides, coef=3)
 
 lower_whisker<-box_plot_results$stats[1]
 upper_whisker<-box_plot_results$stats[5]
@@ -224,21 +224,21 @@ dt_winequality$chlorides[which(dt_winequality$chlorides > upper_whisker)]<-upper
 # Cálculo para la variable free.sulfur.dioxide
 boxplot(dt_winequality$free.sulfur.dioxide, main="free.sulfur.dioxide", names=c("red & white"))
 
-box_plot_results<-boxplot.stats(dt_winequality$free.sulfur.dioxide, coef = 3)
-boxplot.stats(dt_winequality$free.sulfur.dioxide, coef = 3)
+box_plot_results<-boxplot.stats(dt_winequality$free.sulfur.dioxide, coef=3)
+boxplot.stats(dt_winequality$free.sulfur.dioxide, coef=3)
 
 lower_whisker<-box_plot_results$stats[1]
 upper_whisker<-box_plot_results$stats[5]
 
-dt_winequality$free.sulfur.dioxide[which(dt_winequality$free.sulfur.dioxide < lower_whisker | dt_winequality$free.sulfur.dioxide > upper_whisker)] <- mean(dt_winequality$free.sulfur.dioxide, na.rm = TRUE)
+dt_winequality$free.sulfur.dioxide[which(dt_winequality$free.sulfur.dioxide < lower_whisker | dt_winequality$free.sulfur.dioxide > upper_whisker)]<-mean(dt_winequality$free.sulfur.dioxide, na.rm=TRUE)
 ```
 
 ```{r include=FALSE}
 # Cálculo para la variable total.sulfur.dioxide
 boxplot(dt_winequality$total.sulfur.dioxide, main="total.sulfur.dioxide", names=c("red & white"))
 
-box_plot_results<-boxplot.stats(dt_winequality$total.sulfur.dioxide, coef = 3)
-boxplot.stats(dt_winequality$total.sulfur.dioxide, coef = 3)
+box_plot_results<-boxplot.stats(dt_winequality$total.sulfur.dioxide, coef=3)
+boxplot.stats(dt_winequality$total.sulfur.dioxide, coef=3)
 
 lower_whisker<-box_plot_results$stats[1]
 upper_whisker<-box_plot_results$stats[5]
@@ -251,8 +251,8 @@ dt_winequality$total.sulfur.dioxide[which(dt_winequality$total.sulfur.dioxide > 
 # Cálculo para la variable density
 boxplot(dt_winequality$density, main="density", names=c("red & white"))
 
-box_plot_results<-boxplot.stats(dt_winequality$density, coef = 3)
-boxplot.stats(dt_winequality$density, coef = 3)
+box_plot_results<-boxplot.stats(dt_winequality$density, coef=3)
+boxplot.stats(dt_winequality$density, coef=3)
 
 lower_whisker<-box_plot_results$stats[1]
 upper_whisker<-box_plot_results$stats[5]
@@ -265,8 +265,8 @@ dt_winequality$density[which(dt_winequality$density > upper_whisker)]<-upper_whi
 # Cálculo para la variable pH
 boxplot(dt_winequality$pH, main="pH", names=c("red & white"))
 
-box_plot_results<-boxplot.stats(dt_winequality$pH, coef = 3)
-boxplot.stats(dt_winequality$pH, coef = 3)
+box_plot_results<-boxplot.stats(dt_winequality$pH, coef=3)
+boxplot.stats(dt_winequality$pH, coef=3)
 
 lower_whisker<-box_plot_results$stats[1]
 upper_whisker<-box_plot_results$stats[5]
@@ -279,8 +279,8 @@ dt_winequality$pH[which(dt_winequality$pH > upper_whisker)]<-upper_whisker
 # Cálculo para la variable sulphates
 boxplot(dt_winequality$sulphates, main="sulphates", names=c("red & white"))
 
-box_plot_results<-boxplot.stats(dt_winequality$sulphates, coef = 3)
-boxplot.stats(dt_winequality$sulphates, coef = 3)
+box_plot_results<-boxplot.stats(dt_winequality$sulphates, coef=3)
+boxplot.stats(dt_winequality$sulphates, coef=3)
 
 lower_whisker<-box_plot_results$stats[1]
 upper_whisker<-box_plot_results$stats[5]
@@ -293,8 +293,8 @@ dt_winequality$sulphates[which(dt_winequality$sulphates > upper_whisker)]<-upper
 # Cálculo para la variable alcohol
 boxplot(dt_winequality$alcohol, main="alcohol", names=c("red & white"))
 
-box_plot_results<-boxplot.stats(dt_winequality$alcohol, coef = 3)
-boxplot.stats(dt_winequality$alcohol, coef = 3)
+box_plot_results<-boxplot.stats(dt_winequality$alcohol, coef=3)
+boxplot.stats(dt_winequality$alcohol, coef=3)
 
 lower_whisker<-box_plot_results$stats[1]
 upper_whisker<-box_plot_results$stats[5]
@@ -318,12 +318,12 @@ boxplot(dt_winequality$quality, main="quality", names=c("red & white"))
 Se mira la correlación entre variables explicativas para ver si es descartable alguna de ellas.
 
 ```{r}
-dt_winequality.corr <- dt_winequality %>% dplyr::select(!c(quality,type))
-dt_winequality.mat.corr <- cor(dt_winequality.corr,method =  "pearson", use="pairwise.complete.obs")
-col <- colorRampPalette(c("#BB4444", "#EE9988", "#FFFFFF", "#77AADD","#4477AA"))
+dt_winequality.corr<-dt_winequality %>% dplyr::select(!c(quality, type))
+dt_winequality.mat.corr<-cor(dt_winequality.corr, method="pearson", use="pairwise.complete.obs")
+col<-colorRampPalette(c("#BB4444", "#EE9988", "#FFFFFF", "#77AADD", "#4477AA"))
 
 
-corrplot(dt_winequality.mat.corr, type="upper", method = "shade", shade.col = NA, tl.col = "black", tl.srt = 45, col = col(50), addCoef.col="black",order="AOE",mar = c(0.0001,1,1,1), number.cex=0.5,cl.cex = 0.7,tl.cex = 0.7, title = " Matriz de correlación")
+corrplot(dt_winequality.mat.corr, type="upper", method="shade", shade.col=NA, tl.col="black", tl.srt=45, col=col(50), addCoef.col="black", order="AOE", mar=c(0.0001, 1, 1, 1), number.cex=0.5, cl.cex=0.7, tl.cex=0.7, title=" Matriz de correlación")
 ```
 
 Las correlaciones mas altas son:
@@ -338,7 +338,7 @@ En este caso se va a optar por utilizar todas las variables explicativas numéri
 Por último comentar que se va a generar una variable dicotimica a partir de la variable de calidad. Esta variable "quality_class" permitirá clasificar el vino y hacer algoritmos predictivos sobre una variable de respuesta categorica.
 
 ```{r}
-dt_winequality<-mutate(dt_winequality, quality_class = ifelse(quality >=7 , "good", "not good"))
+dt_winequality<-mutate(dt_winequality, quality_class=ifelse(quality >=7 , "good", "not good"))
 dt_winequality$quality_class<-as.factor(dt_winequality$quality_class)
 ```
 
@@ -347,8 +347,7 @@ dt_winequality$quality_class<-as.factor(dt_winequality$quality_class)
 Se aplica el algoritmo PCA para obtener las componentes principales y plantear una reducción de la dimensionalidad del problema.
 
 ```{r}
-pca<- prcomp(dt_winequality.corr,scale=TRUE)
-
+pca<-prcomp(dt_winequality.corr, scale=TRUE)
 ```
 
 El aporte de cada una de las variables a las componentes principales es el siguiente:
@@ -366,30 +365,30 @@ pca$sdev
 A partir de las desviaciones standard se obtienen las varianzas y se divide por la suma de varianzas para obtener la proporcion de varianza que aportan cada una de las componentes principales. 
 
 ```{r}
-prop_varianza <- pca$sdev^2 / sum(pca$sdev^2)
+prop_varianza<-pca$sdev^2 / sum(pca$sdev^2)
 prop_varianza
 ```
 
 Se representa de manera gráfica el aporte de las diez componentes principales a la varianza:
 
 ```{r}
-fviz_eig(pca,xlab="Componente principal",ylab="Porcentaje de varianza explicada",main="",ncp=10)
+fviz_eig(pca, xlab="Componente principal", ylab="Porcentaje de varianza explicada", main="", ncp=10)
 ```
 
 También se representa de manera gráfica la descomposición de cada una de las variables predictoras en las dos componentes principales:
 
 ```{r}
-fviz_pca_var(pca,
-             col.var = "contrib", # Color by contributions to the PC
-             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
-             repel = TRUE     # Avoid text overlapping
+fviz_pca_var(pca, 
+             col.var="contrib", # Color by contributions to the PC
+             gradient.cols=c("#00AFBB", "#E7B800", "#FC4E07"), 
+             repel=TRUE     # Avoid text overlapping
              )
 ```
 
 Se calcula la proporción de varianza acumulada de las componentes principales:
 
 ```{r}
-prop_varianza_acum <- cumsum(prop_varianza)
+prop_varianza_acum<-cumsum(prop_varianza)
 prop_varianza_acum
 
 ```
@@ -397,13 +396,13 @@ prop_varianza_acum
 Se hace una representación gráfica de la proporción de varianza acumulada que muestra a partir de que componente principal se vuelve despreciable el aporte de una nueva componente principal. Ya en los datos anteriores se observaba que a partir de la sexta componente principal ya se había realizado mas de un 98% del aporte y ahora se ve expresado de manera gráfica.
 
 ```{r}
-ggplot(data = data.frame(prop_varianza_acum, pc = 1:11),
-       aes(x = pc, y = prop_varianza_acum, group = 1)) +
+ggplot(data=data.frame(prop_varianza_acum, pc=1:11), 
+       aes(x=pc, y=prop_varianza_acum, group=1)) +
   geom_point() +
   geom_line() +
   theme_bw() +
-  labs(x = "Componente principal",
-       y = "Prop. varianza explicada acumulada")
+  labs(x="Componente principal", 
+       y="Prop. varianza explicada acumulada")
 ```
 
 Tras estudio de las componentes principales se llega a la conclusión para explicar un grado importante de la varianza p.e. un 80% se necesitaría hasta 6 componentes principales. Además se observa que el aporte de cada una de las variables explicativas a las componentes principales está muy distribuido. Debido al reducido numero de variables explicativas y a lo distribuida que está la varianza entre ellas se decide mantener todas ellas en la obtención de un modelo supervisado.
@@ -414,7 +413,7 @@ Se va a trabajar para el contraste de hipotesis con las medias muestrales, con l
 En cuanto a la homogeneidad de la varianza de la variable de respuesta "quality" entre el conjunto de vinos tintos y blancos se observa que las varianzas de ambos grupos no puede descartarse la hipotesis nula de que sean varianzas iguales al dar un valor de F que se encuentra dentro del intervalo de confianza.
 
 ```{r}
-var.test(dt_red_wines$quality,dt_white_wines$quality)
+var.test(dt_red_wines$quality, dt_white_wines$quality)
 ```
 
 ## 4.3 - Pruebas estadísticas
@@ -423,13 +422,13 @@ var.test(dt_red_wines$quality,dt_white_wines$quality)
 
 Se realiza un contraste de hipotesis sobre de las medias de calidad de vino blanco y tinto para ver si son iguales o diferentes.
 
-- H0: \(\mu_{red} = \mu_{white}\)
+- H0: \(\mu_{red}=\mu_{white}\)
 - H1: \(\mu_{red} \neq \mu_{white}\)
 
 Se trata de un contraste de dos muestras de varianzas desconocidas, pero iguales. Esto implica aplicar T-test para la realización del contraste de hipótesis.
 
 ```{r}
-t.test(dt_red_wines$quality,dt_white_wines$quality,alternative="two.sided", var.equal=TRUE)
+t.test(dt_red_wines$quality, dt_white_wines$quality, alternative="two.sided", var.equal=TRUE)
 
 ```
 
@@ -441,52 +440,53 @@ Se puede observar que realmente hay una diferencia en las medias de calidad entr
 
 ```{r}
 set.seed(3456)
-trainIndex <- createDataPartition(dt_winequality$quality_class, p = .7, 
-                                  list = FALSE, 
-                                  times = 1)
+trainIndex<-createDataPartition(dt_winequality$quality_class, p=.7, 
+                                  list=FALSE, 
+                                  times=1)
 
-dt_winequality.data.train <- dt_winequality[trainIndex,]%>%dplyr::select(-c(quality))
-dt_winequality.data.test  <- dt_winequality[-trainIndex,]%>%dplyr::select(-c(quality))
+dt_winequality.data.train<-dt_winequality[trainIndex, ]%>%dplyr::select(-c(quality))
+dt_winequality.data.test<-dt_winequality[-trainIndex, ]%>%dplyr::select(-c(quality))
 ```
 
 #### 4.3.2.2 - Tuning básico de parametros configurando cross-validation
 
 ```{r}
-fitControl <- trainControl(## 10-fold CV
-                           method = "repeatedcv",
-                           number = 10,
+fitControl<-trainControl(## 10-fold CV
+                           method="repeatedcv", 
+                           number=10, 
                            ## repeated ten times
-                           repeats = 10)
+                           repeats=10)
 ```
 
 #### 4.3.2.3. - Obtención de modelos 
 
-#### 4.3.2.3.1 -  CART
+#### 4.3.2.3.1 - CART
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE, paged.print=FALSE}
-modelRPART <- train(quality_class ~ ., data = dt_winequality.data.train, method = "rpart", trControl = fitControl)
+modelRPART<-train(quality_class ~ ., data=dt_winequality.data.train, method="rpart", trControl=fitControl)
 modelRPART
 ```
 
-#### 4.3.2.3.2 -  KNN
+#### 4.3.2.3.2 - KNN
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE, paged.print=TRUE}
-modelKNN<- train(quality_class ~ ., data = dt_winequality.data.train, method = "knn", trControl = fitControl)
+modelKNN<-train(quality_class ~ ., data=dt_winequality.data.train, method="knn", trControl=fitControl)
 modelKNN
 ```
-#### 4.3.2.3.2 -  GENERALIZED LINEAR MODEL
+
+#### 4.3.2.3.2 - Generalized Linear Model
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE, paged.print=TRUE}
-modelGLM<- train(quality_class ~ ., data = dt_winequality.data.train, method = "glm", trControl = fitControl)
+modelGLM<-train(quality_class ~ ., data=dt_winequality.data.train, method="glm", trControl=fitControl)
 modelGLM
 ```
 
-#### 4.3.2.3. - Comparativa de modelos
+#### 4.3.2.3.3 - Comparativa de modelos
 
 Para comparar los diferentes modelos, al habarse obtenido todos a partir del paquete Caret se puede usar la función resamples
 
 ```{r}
-results <- resamples(list(RPART=modelRPART, KNN=modelKNN, GLM=modelGLM))
+results<-resamples(list(RPART=modelRPART, KNN=modelKNN, GLM=modelGLM))
 # summarize the distributions
 summary(results)
 
@@ -501,21 +501,21 @@ Por lo que se puede observar el mejor modelo parece ser el GLM, aunque si se qui
 ```{r}
 dt_winequality.data.test.X<-dt_winequality.data.test%>%dplyr::select(-c(quality_class))
 dt_winequality.data.test.Y<-as.factor((dt_winequality.data.test%>%dplyr::select(c(quality_class)))$quality_class)
-predicted_GLM<- predict(modelGLM, dt_winequality.data.test.X)
+predicted_GLM<-predict(modelGLM, dt_winequality.data.test.X)
 ```
 
 ### 4.3.4 - Matriz confusión sobre el conjunto de test
 
 ```{r}
-confusionMatrix(reference = dt_winequality.data.test.Y, data = predicted_GLM, mode='everything', positive='good')
+confusionMatrix(reference=dt_winequality.data.test.Y, data=predicted_GLM, mode='everything', positive='good')
 ```
 
-### 4.3.5. ROC y AUC 
+### 4.3.5 - ROC y AUC 
 
 El valor obtenido de AUC muestra que el modelo es capaz de discriminar de manera adecuada.
 
 ```{r}
-plot.roc(as.numeric(predicted_GLM),as.numeric(dt_winequality.data.test.Y),print.auc=TRUE)
+plot.roc(as.numeric(predicted_GLM), as.numeric(dt_winequality.data.test.Y), print.auc=TRUE)
 ```
 
 ******
