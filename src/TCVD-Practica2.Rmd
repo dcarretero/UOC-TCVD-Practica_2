@@ -3,17 +3,20 @@ title: "Practica 2"
 author: "Tipologia y Ciclo de Vida De Los Datos"
 date: "Diciembre 2021"
 output:
-  word_document:
-    toc: yes
-    toc_depth: '3'
-  pdf_document:
-    number_section: no
-    toc: yes
-    latex_engine: xelatex
   html_document:
     number_sections: no
     toc: yes
     toc_depth: 3
+    fontsize: 12pt
+  pdf_document:
+    number_section: no
+    toc: yes
+    latex_engine: xelatex
+    fontsize: 12pt
+  word_document:
+    toc: yes
+    toc_depth: '3'
+    fontsize: 12pt
 lang: es
 ---
 
@@ -128,10 +131,9 @@ Los resultados muestran que los datos (6497 observaciones y 13 variables) se han
 
 ## 3.1 - Valores perdidos
 
-Las funciones `introduce(dt_winequality)` y `plot_intro(dt_winequality)` describen la información básica para los datos de entrada.
+La función `plot_intro(dt_winequality)` describe la información básica para los datos de entrada.
 
 ```{r}
-introduce(dt_winequality)
 plot_intro(dt_winequality)
 ```
 
