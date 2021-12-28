@@ -58,38 +58,37 @@ if(!require('arules')) install.packages('arules', repos='http://cran.us.r-projec
 # 1- Descripción del dataset y objetivos
 ******
 
-> Nuestra selección del dataset es: Red Wine Quality de.
+Nuestra selección del dataset es: Red Wine Quality de Kaggle:
+* https://www.kaggle.com/uciml/red-wine-quality-cortez-et-al-2009
 
-> * https://www.kaggle.com/uciml/red-wine-quality-cortez-et-al-2009
+Tenemos dos conjuntos de datos que están relacionados con variantes tinto y blanco del vino portugués "Vinho Verde".
 
-> Tenemos dos conjuntos de datos que están relacionados con variantes tinto y blanco del vino portugués "Vinho Verde".
+Ambos datasets contienen 12 variables númericas:
 
-> Ambos datasets contienen 12 variables númericas:
+- **fixed.acidity**: el nivel de la acidez fija.
+- **volatile.acidity**: el nivel de la acidez volátil.
+- **citric.acid**: el nivel del ácido cítrico.
+- **residual.sugar**: el nivel del azúcar residual.
+- **chlorides**: el nivel de los cloruros.
+- **free.sulfur.dioxide**: el nivel del dióxido de azufre libre.
+- **total.sulfur.dioxide**: el nivel del dióxido de azufre total.
+- **density**: el nivel de la densidad.
+- **pH**: el nivel del pH.
+- **sulphates**: el nivel de los sulfatos.
+- **alcohol**: el nivel del alcohol.
+- **quality**: la calidad (entre 0 y 9).
 
-> * **fixed.acidity**: el nivel de la acidez fija.
-  * **volatile.acidity**: el nivel de la acidez volátil.
-  * **citric.acid**: el nivel del ácido cítrico.
-  * **residual.sugar**: el nivel del azúcar residual.
-  * **chlorides**: el nivel de los cloruros.
-  * **free.sulfur.dioxide**: el nivel del dióxido de azufre libre.
-  * **total.sulfur.dioxide**: el nivel del dióxido de azufre total.
-  * **density**: el nivel de la densidad.
-  * **pH**: el nivel del pH.
-  * **sulphates**: el nivel de los sulfatos.
-  * **alcohol**: el nivel del alcohol.
-  * **quality**: la calidad (entre 0 y 9).
-
-> Basicamente nos planteamos dos preguntas a resolver en la práctica planteada con este dataset:
-> * 1) ¿Existen diferencias de calidad entre el vino blanco y el vino tinto?
-> * 2) ¿Se puede predecir la calidad del vino a partir de las variables explicativas sin tener en cuenta el tipo de vino (tinto o blanco)?
+Basicamente nos planteamos dos preguntas a resolver en la práctica planteada con este dataset:
+1) ¿Existen diferencias de calidad entre el vino blanco y el vino tinto?
+2) ¿Se puede predecir la calidad del vino a partir de las variables explicativas sin tener en cuenta el tipo de vino (tinto o blanco)?
 
 ******
 # 2- Integración y selección de los datos de interés
 ******
 
-> Nuestra propuesta pasa por integrar ambos datasets en uno nuevo `dt_winequality` que contenga una nueva variable para determinar si el vino es tinto o blanco.
+Nuestra propuesta pasa por integrar ambos datasets en uno nuevo `dt_winequality` que contenga una nueva variable para determinar si el vino es tinto o blanco.
 
-> Primero realizamos la carga del archivos de datos `winequality-red.csv` y añadimos una nueva variable `type` con valor `red`.
+Primero realizamos la carga del archivos de datos `winequality-red.csv` y añadimos una nueva variable `type` con valor `red`.
 
 ```{r}
 dt_red_wines<-read.csv("../datasets/winequality-red.csv", header=T, sep=";")
@@ -97,7 +96,7 @@ type<-"red"
 dt_red_wines<-cbind(type, dt_red_wines)
 ```
 
-> A continuación realizamos la carga del archivos de datos `winequality-white.csv` y añadimos también la variable `type` esta vez con valor `white`.
+A continuación realizamos la carga del archivos de datos `winequality-white.csv` y añadimos también la variable `type` esta vez con valor `white`.
 
 ```{r}
 dt_white_wines<-read.csv("../datasets/winequality-white.csv", header=T, sep=";")
@@ -105,7 +104,7 @@ type<-"white"
 dt_white_wines<-cbind(type, dt_white_wines)
 ```
 
-> Con las funciones `dim()` y `str()` comparamos las dimensiones de los conjuntos de datos y sus estructuras antes de realizar la integración de ambos datasets.
+Con las funciones `dim()` y `str()` comparamos las dimensiones de los conjuntos de datos y sus estructuras antes de realizar la integración de ambos datasets.
 
 ```{r}
 dim(dt_red_wines)
@@ -114,14 +113,14 @@ dim(dt_white_wines)
 str(dt_white_wines)
 ```
 
-> Los resultados nos muestran que ambos datasets contienen 13 variables contínuas y que el dataset de los vinos blancos es hasta tres veces más grande que el dataset de los vinos rojos.
+Los resultados nos muestran que ambos datasets contienen 13 variables contínuas y que el dataset de los vinos blancos es hasta tres veces más grande que el dataset de los vinos rojos.
 
 ```{r}
 dt_winequality<-rbind(dt_red_wines, dt_white_wines)
 dim(dt_winequality)
 ```
 
-> Los resultados muestran que los datos (6497 observaciones y 13 variables) se han integrado correctamente.
+Los resultados muestran que los datos (6497 observaciones y 13 variables) se han integrado correctamente.
 
 ******
 # 3- Limpieza de datos
@@ -129,24 +128,24 @@ dim(dt_winequality)
 
 ## 3.1 - Valores perdidos
 
-> Las funciones `introduce(dt_winequality)` y `plot_intro(dt_winequality)` describen la información básica para los datos de entrada.
+Las funciones `introduce(dt_winequality)` y `plot_intro(dt_winequality)` describen la información básica para los datos de entrada.
 
 ```{r}
 introduce(dt_winequality)
 plot_intro(dt_winequality)
 ```
 
-> Observamos que no hay valores perdidos.
+Observamos que no hay valores perdidos.
 
 ## 3.2 - Identificación y tratamiento de valores extremos
 
-> Diagrama de caja para la variable `fixed.acidity`.
+Diagrama de caja para la variable `fixed.acidity`.
 
 ```{r}
 boxplot(dt_winequality$fixed.acidity, main="fixed.acidity", names=c("red & white"))
 ```
 
-> Utilizamos la función `boxplot.stats()` con coeficiente 3 para calcular el lower y upper whiskers.
+Utilizamos la función `boxplot.stats()` con coeficiente 3 para calcular el lower y upper whiskers.
 
 ```{r}
 box_plot_results<-boxplot.stats(dt_winequality$fixed.acidity, coef = 3)
@@ -156,14 +155,14 @@ lower_whisker<-box_plot_results$stats[1]
 upper_whisker<-box_plot_results$stats[5]
 ```
 
-> Imputamos los valores lower y upper whiskers si nuestros valores extremos son inferiores o superiores respectivamente.
+Imputamos los valores lower y upper whiskers si nuestros valores extremos son inferiores o superiores respectivamente.
 
 ```{r}
 dt_winequality$fixed.acidity[which(dt_winequality$fixed.acidity < lower_whisker)]<-lower_whisker
 dt_winequality$fixed.acidity[which(dt_winequality$fixed.acidity > upper_whisker)]<-upper_whisker
 ```
 
-> Se aplica este mismo tratamiento al resto de variables explicativas.
+Se aplica este mismo tratamiento al resto de variables explicativas.
 
 ```{r include=FALSE}
 # Cálculo para la variable volatile.acidity
@@ -206,7 +205,6 @@ upper_whisker<-box_plot_results$stats[5]
 dt_winequality$residual.sugar[which(dt_winequality$residual.sugar < lower_whisker)]<-lower_whisker
 dt_winequality$residual.sugar[which(dt_winequality$residual.sugar > upper_whisker)]<-upper_whisker
 ```
-
 
 ```{r include=FALSE}
 # Cálculo para la variable chlorides
@@ -317,7 +315,7 @@ boxplot(dt_winequality$quality, main="quality", names=c("red & white"))
 
 ### 4.1.1 - Correlación de variables 
 
-> Se mira la correlación entre variables explicativas para ver si es descartable alguna de ellas.
+Se mira la correlación entre variables explicativas para ver si es descartable alguna de ellas.
 
 ```{r}
 dt_winequality.corr <- dt_winequality %>% dplyr::select(!c(quality,type))
@@ -328,17 +326,16 @@ col <- colorRampPalette(c("#BB4444", "#EE9988", "#FFFFFF", "#77AADD","#4477AA"))
 corrplot(dt_winequality.mat.corr, type="upper", method = "shade", shade.col = NA, tl.col = "black", tl.srt = 45, col = col(50), addCoef.col="black",order="AOE",mar = c(0.0001,1,1,1), number.cex=0.5,cl.cex = 0.7,tl.cex = 0.7, title = " Matriz de correlación")
 ```
 
-> Las correlaciones mas altas son:
+Las correlaciones mas altas son:
 
- * densidad con alcohol (-0.69)
- * free.sulfur.dioxide con tota.sulfur.dioxide (0.72)
+- densidad con alcohol (-0.69)
+- free.sulfur.dioxide con tota.sulfur.dioxide (0.72)
 
-> Aún siendo altas ambas correlaciones, se decide mantener estas variables en el modelado.  En caso de haber habido un conjunto mayor de variables explicativas, estas variables correlacionadas hubiesen sido las primeras candidatas a eliminarse del modelo, pero el no tener unos valores mas próximos a 1 y el hecho de no tener excesivas variables explicativas se ha optado por mantenerlas.
+Aún siendo altas ambas correlaciones, se decide mantener estas variables en el modelado.  En caso de haber habido un conjunto mayor de variables explicativas, estas variables correlacionadas hubiesen sido las primeras candidatas a eliminarse del modelo, pero el no tener unos valores mas próximos a 1 y el hecho de no tener excesivas variables explicativas se ha optado por mantenerlas.
 
-> En este caso se va a optar por utilizar todas las variables explicativas numéricas en los diferentes modelos predictivos que se realicen. La variable explicativa "type" solo va a ser utilizada en el contraste de hipotesis para ver si hay una diferencia en la media de calidad por tipo de vino.
-La variable de respuestas seleccionada es "quality" y es aquella para que se va entrenar el modelo predictivo.
+En este caso se va a optar por utilizar todas las variables explicativas numéricas en los diferentes modelos predictivos que se realicen. La variable explicativa "type" solo va a ser utilizada en el contraste de hipotesis para ver si hay una diferencia en la media de calidad por tipo de vino. La variable de respuestas seleccionada es "quality" y es aquella para que se va entrenar el modelo predictivo.
 
-> Por último comentar que se va a generar una variable dicotimica a partir de la variable de calidad. Esta variable "quality_class" permitirá clasificar el vino y hacer algoritmos predictivos sobre una variable de respuesta categorica.
+Por último comentar que se va a generar una variable dicotimica a partir de la variable de calidad. Esta variable "quality_class" permitirá clasificar el vino y hacer algoritmos predictivos sobre una variable de respuesta categorica.
 
 ```{r}
 dt_winequality<-mutate(dt_winequality, quality_class = ifelse(quality >=7 , "good", "not good"))
@@ -347,39 +344,39 @@ dt_winequality$quality_class<-as.factor(dt_winequality$quality_class)
 
 ### 4.1.2 - Reducción de la dimensionalidad (PCA)
 
->Se aplica el algoritmo PCA para obtener las componentes principales y plantear una reducción de la dimensionalidad del problema.
-
+Se aplica el algoritmo PCA para obtener las componentes principales y plantear una reducción de la dimensionalidad del problema.
 
 ```{r}
 pca<- prcomp(dt_winequality.corr,scale=TRUE)
 
 ```
 
-> El aporte de cada una de las variables a las componentes principales es el siguiente:
+El aporte de cada una de las variables a las componentes principales es el siguiente:
 
 ```{r}
 pca$rotation
 ```
 
-> Las desviaciones standard de cada una de las componentes principales puede ser obtenida del siguiente modo:
+Las desviaciones standard de cada una de las componentes principales puede ser obtenida del siguiente modo:
 
 ```{r}
 pca$sdev
 ```
-> A partir de las desviaciones standard se obtienen las varianzas y se divide por la suma de varianzas para obtener la proporcion de varianza que aportan cada una de las componentes principales. 
+
+A partir de las desviaciones standard se obtienen las varianzas y se divide por la suma de varianzas para obtener la proporcion de varianza que aportan cada una de las componentes principales. 
 
 ```{r}
 prop_varianza <- pca$sdev^2 / sum(pca$sdev^2)
 prop_varianza
 ```
 
-> Se representa de manera gráfica el aporte de las diez componentes principales a la varianza:
+Se representa de manera gráfica el aporte de las diez componentes principales a la varianza:
 
 ```{r}
 fviz_eig(pca,xlab="Componente principal",ylab="Porcentaje de varianza explicada",main="",ncp=10)
 ```
 
-> También se representa de manera gráfica la descomposición de cada una de las variables predictoras en las dos componentes principales:
+También se representa de manera gráfica la descomposición de cada una de las variables predictoras en las dos componentes principales:
 
 ```{r}
 fviz_pca_var(pca,
@@ -389,7 +386,7 @@ fviz_pca_var(pca,
              )
 ```
 
-> Se calcula la proporción de varianza acumulada de las componentes principales:
+Se calcula la proporción de varianza acumulada de las componentes principales:
 
 ```{r}
 prop_varianza_acum <- cumsum(prop_varianza)
@@ -397,7 +394,7 @@ prop_varianza_acum
 
 ```
 
-> Se hace una representación gráfica de la proporción de varianza acumulada que muestra a partir de que componente principal se vuelve despreciable el aporte de una nueva componente principal. Ya en los datos anteriores se observaba que a partir de la sexta componente principal ya se había realizado mas de un 98% del aporte y ahora se ve expresado de manera gráfica.
+Se hace una representación gráfica de la proporción de varianza acumulada que muestra a partir de que componente principal se vuelve despreciable el aporte de una nueva componente principal. Ya en los datos anteriores se observaba que a partir de la sexta componente principal ya se había realizado mas de un 98% del aporte y ahora se ve expresado de manera gráfica.
 
 ```{r}
 ggplot(data = data.frame(prop_varianza_acum, pc = 1:11),
@@ -409,11 +406,11 @@ ggplot(data = data.frame(prop_varianza_acum, pc = 1:11),
        y = "Prop. varianza explicada acumulada")
 ```
 
-> Tras estudio de las componentes principales se llega a la conclusión para explicar un grado importante de la varianza p.e. un 80% se necesitaría hasta 6 componentes principales. Además se observa que el aporte de cada una de las variables explicativas a las componentes principales está muy distribuido. Debido al reducido numero de variables explicativas y a lo distribuida que está la varianza entre ellas se decide mantener todas ellas en la obtención de un modelo supervisado.
+Tras estudio de las componentes principales se llega a la conclusión para explicar un grado importante de la varianza p.e. un 80% se necesitaría hasta 6 componentes principales. Además se observa que el aporte de cada una de las variables explicativas a las componentes principales está muy distribuido. Debido al reducido numero de variables explicativas y a lo distribuida que está la varianza entre ellas se decide mantener todas ellas en la obtención de un modelo supervisado.
 
 ## 4.2 - Comprobación de la normalidad y homogeneidad de la varianza
 
-> Se va a trabajar para el contraste de hipotesis con las medias muestrales, con lo cual al ser una muestra mayor de 30 elementos puede aplicarse el teorema del limite central bajo el cual se supone que dichas medias muestrales siguen una distribución normal.
+Se va a trabajar para el contraste de hipotesis con las medias muestrales, con lo cual al ser una muestra mayor de 30 elementos puede aplicarse el teorema del limite central bajo el cual se supone que dichas medias muestrales siguen una distribución normal.
 En cuanto a la homogeneidad de la varianza de la variable de respuesta "quality" entre el conjunto de vinos tintos y blancos se observa que las varianzas de ambos grupos no puede descartarse la hipotesis nula de que sean varianzas iguales al dar un valor de F que se encuentra dentro del intervalo de confianza.
 
 ```{r}
@@ -423,23 +420,25 @@ var.test(dt_red_wines$quality,dt_white_wines$quality)
 ## 4.3 - Pruebas estadísticas
 
 ### 4.3.1 - Contraste de hipotesis
-> Se realiza un contraste de hipotesis sobre de las medias de calidad de vino blanco y tinto para ver si son iguales o diferentes.
 
-H0: \(\mu_{red} = \mu_{white}\)
-H1: \(\mu_{red} \neq \mu_{white}\)
+Se realiza un contraste de hipotesis sobre de las medias de calidad de vino blanco y tinto para ver si son iguales o diferentes.
 
-> Se trata de un contraste de dos muestras de varianzas desconocidas, pero iguales. Esto implica aplicar T-test para la realización del contraste de hipótesis.
+- H0: \(\mu_{red} = \mu_{white}\)
+- H1: \(\mu_{red} \neq \mu_{white}\)
+
+Se trata de un contraste de dos muestras de varianzas desconocidas, pero iguales. Esto implica aplicar T-test para la realización del contraste de hipótesis.
 
 ```{r}
 t.test(dt_red_wines$quality,dt_white_wines$quality,alternative="two.sided", var.equal=TRUE)
 
 ```
 
->Se puede observar que realmente hay una diferencia en las medias de calidad entre tipos de vino al ser el p-value mucho menor que el valor de significancia de 0.05 y ser por tanto rechazable la hipotesis nula. Las medias de calidad del vino tinto y del blanco son significativamente diferentes desde un punto de vista estadístico.
+Se puede observar que realmente hay una diferencia en las medias de calidad entre tipos de vino al ser el p-value mucho menor que el valor de significancia de 0.05 y ser por tanto rechazable la hipotesis nula. Las medias de calidad del vino tinto y del blanco son significativamente diferentes desde un punto de vista estadístico.
 
 ### 4.3.2 - Modelado y evaluación de algoritmos Predictivos 
 
-#### 4.3.2.1 - Partición en conjuntos de entrenamiento y test 
+#### 4.3.2.1 - Partición en conjuntos de entrenamiento y test
+
 ```{r}
 set.seed(3456)
 trainIndex <- createDataPartition(dt_winequality$quality_class, p = .7, 
@@ -451,6 +450,7 @@ dt_winequality.data.test  <- dt_winequality[-trainIndex,]%>%dplyr::select(-c(qua
 ```
 
 #### 4.3.2.2 - Tuning básico de parametros configurando cross-validation
+
 ```{r}
 fitControl <- trainControl(## 10-fold CV
                            method = "repeatedcv",
@@ -483,7 +483,7 @@ modelGLM
 
 #### 4.3.2.3. - Comparativa de modelos
 
-> Para comparar los diferentes modelos, al habarse obtenido todos a partir del paquete Caret se puede usar la función resamples
+Para comparar los diferentes modelos, al habarse obtenido todos a partir del paquete Caret se puede usar la función resamples
 
 ```{r}
 results <- resamples(list(RPART=modelRPART, KNN=modelKNN, GLM=modelGLM))
@@ -513,6 +513,7 @@ confusionMatrix(reference = dt_winequality.data.test.Y, data = predicted_GLM, mo
 ### 4.3.5. ROC y AUC 
 
 El valor obtenido de AUC muestra que el modelo es capaz de discriminar de manera adecuada.
+
 ```{r}
 plot.roc(as.numeric(predicted_GLM),as.numeric(dt_winequality.data.test.Y),print.auc=TRUE)
 ```
