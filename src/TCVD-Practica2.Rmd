@@ -1,7 +1,7 @@
 ---
-title: "Practica 2"
+title: "Practica 2 - Diciembre 2021"
 author: "Tipologia y Ciclo de Vida De Los Datos"
-date: "Diciembre 2021"
+date: "Daniel Carretero San José - Ivan Tecles Gassó"
 output:
   html_document:
     number_sections: no
@@ -21,40 +21,12 @@ lang: es
 ---
 
 ```{r include=FALSE}
-# https://cran.r-project.org/web/packages/DataExplorer/index.html
-if(!require(DataExplorer)){
-    install.packages('DataExplorer', repos='http://cran.us.r-project.org')
-    library(DataExplorer)
-}
-
-if (!require('ggplot2')) install.packages('ggplot2'); library('ggplot2')
-# https://cran.r-project.org/web/packages/dplyr/index.html
+if(!require(DataExplorer)) install.packages('DataExplorer', repos='http://cran.us.r-project.org'); library(DataExplorer)
 if (!require('dplyr')) install.packages('dplyr'); library('dplyr')
-# https://cran.r-project.org/web/packages/skimr/index.html
-if (!require('skimr')) install.packages('skimr'); library ('skimr')
-# https://cran.r-project.org/web/packages/corrplot/index.html
 if (!require('corrplot')) install.packages('corrplot'); library('corrplot')
-# https://cran.r-project.org/web/packages/nortest/index.html
-if (!require('nortest')) install.packages('nortest'); library ('nortest')
-# https://cran.r-project.org/web/packages/stats/index.html
-if (!require('stats')) install.packages('stats'); library('stats')
-# https://cran.r-project.org/web/packages/faraway/index.html
-if (!require('faraway')) install.packages('faraway'); library('faraway')
-# https://cran.r-project.org/web/packages/ResourceSelection/index.html
-if (!require('ResourceSelection')) install.packages('ResourceSelection'); library('ResourceSelection')
-# https://cran.r-project.org/web/packages/pROC/index.html
 if (!require('pROC')) install.packages('pROC'); library('pROC')
-# https://cran.r-project.org/web/packages/factoextra/index.html
 if (!require('factoextra')) install.packages('factoextra'); library('factoextra')
-if(!require(C50)){
-    install.packages('C50', repos='http://cran.es.r-project.org')
-    require(C50)
-}
-if(!require('klaR')) install.packages('klaR', repos='http://cran.us.r-project.org');library('klaR')
-if(!require('kernlab')) install.packages('kernlab', repos='http://cran.us.r-project.org');library('kernlab')
 if(!require('caret')) install.packages('caret', repos='http://cran.us.r-project.org');library('caret')
-if(!require('xgboost')) install.packages('xgboost', repos='http://cran.us.r-project.org');library('xgboost')
-if(!require('arules')) install.packages('arules', repos='http://cran.us.r-project.org');library('arules')
 ```
 
 ******
@@ -305,9 +277,13 @@ dt_winequality$alcohol[which(dt_winequality$alcohol < lower_whisker)]<-lower_whi
 dt_winequality$alcohol[which(dt_winequality$alcohol > upper_whisker)]<-upper_whisker
 ```
 
-```{r include=FALSE}
+Diagrama de caja para la variable `quality`.
+
+```{r}
 boxplot(dt_winequality$quality, main="quality", names=c("red & white"))
 ```
+
+Con la variable `quality` será la única que aceptamos los valores extremos como válidos, pues nos da una mayor información acerca de la calidad de los vinos, por tanto no realizamos ningún tratamiento sobre ella.
 
 ******
 # 4- Análisis de datos y representación de resultados
@@ -330,8 +306,8 @@ corrplot(dt_winequality.mat.corr, type="upper", method="shade", shade.col=NA, tl
 
 Las correlaciones mas altas son:
 
-- densidad con alcohol (-0.69)
-- free.sulfur.dioxide con tota.sulfur.dioxide (0.72)
+- density con alcohol (-0.69)
+- free.sulfur.dioxide con total.sulfur.dioxide (0.72)
 
 Aún siendo altas ambas correlaciones, se decide mantener estas variables en el modelado.  En caso de haber habido un conjunto mayor de variables explicativas, estas variables correlacionadas hubiesen sido las primeras candidatas a eliminarse del modelo, pero el no tener unos valores mas próximos a 1 y el hecho de no tener excesivas variables explicativas se ha optado por mantenerlas.
 
@@ -367,7 +343,7 @@ pca$sdev
 A partir de las desviaciones standard se obtienen las varianzas y se divide por la suma de varianzas para obtener la proporcion de varianza que aportan cada una de las componentes principales. 
 
 ```{r}
-prop_varianza<-pca$sdev^2 / sum(pca$sdev^2)
+prop_varianza<-pca$sdev^2/sum(pca$sdev^2)
 prop_varianza
 ```
 
@@ -392,7 +368,6 @@ Se calcula la proporción de varianza acumulada de las componentes principales:
 ```{r}
 prop_varianza_acum<-cumsum(prop_varianza)
 prop_varianza_acum
-
 ```
 
 Se hace una representación gráfica de la proporción de varianza acumulada que muestra a partir de que componente principal se vuelve despreciable el aporte de una nueva componente principal. Ya en los datos anteriores se observaba que a partir de la sexta componente principal ya se había realizado mas de un 98% del aporte y ahora se ve expresado de manera gráfica.
@@ -400,11 +375,11 @@ Se hace una representación gráfica de la proporción de varianza acumulada que
 ```{r}
 ggplot(data=data.frame(prop_varianza_acum, pc=1:11), 
        aes(x=pc, y=prop_varianza_acum, group=1)) +
-  geom_point() +
-  geom_line() +
-  theme_bw() +
-  labs(x="Componente principal", 
-       y="Prop. varianza explicada acumulada")
+       geom_point() +
+       geom_line() +
+       theme_bw() +
+       labs(x="Componente principal", 
+            y="Prop. varianza explicada acumulada")
 ```
 
 Tras estudio de las componentes principales se llega a la conclusión para explicar un grado importante de la varianza p.e. un 80% se necesitaría hasta 6 componentes principales. Además se observa que el aporte de cada una de las variables explicativas a las componentes principales está muy distribuido. Debido al reducido numero de variables explicativas y a lo distribuida que está la varianza entre ellas se decide mantener todas ellas en la obtención de un modelo supervisado.
@@ -412,6 +387,7 @@ Tras estudio de las componentes principales se llega a la conclusión para expli
 ## 4.2 - Comprobación de la normalidad y homogeneidad de la varianza
 
 Se va a trabajar para el contraste de hipotesis con las medias muestrales, con lo cual al ser una muestra mayor de 30 elementos puede aplicarse el teorema del limite central bajo el cual se supone que dichas medias muestrales siguen una distribución normal.
+
 En cuanto a la homogeneidad de la varianza de la variable de respuesta "quality" entre el conjunto de vinos tintos y blancos se observa que las varianzas de ambos grupos no puede descartarse la hipotesis nula de que sean varianzas iguales al dar un valor de F que se encuentra dentro del intervalo de confianza.
 
 ```{r}
@@ -431,7 +407,6 @@ Se trata de un contraste de dos muestras de varianzas desconocidas, pero iguales
 
 ```{r}
 t.test(dt_red_wines$quality, dt_white_wines$quality, alternative="two.sided", var.equal=TRUE)
-
 ```
 
 Se puede observar que realmente hay una diferencia en las medias de calidad entre tipos de vino al ser el p-value mucho menor que el valor de significancia de 0.05 y ser por tanto rechazable la hipotesis nula. Las medias de calidad del vino tinto y del blanco son significativamente diferentes desde un punto de vista estadístico.
@@ -454,10 +429,10 @@ dt_winequality.data.test<-dt_winequality[-trainIndex, ]%>%dplyr::select(-c(quali
 
 ```{r}
 fitControl<-trainControl(## 10-fold CV
-                           method="repeatedcv", 
-                           number=10, 
-                           ## repeated ten times
-                           repeats=10)
+                         method="repeatedcv", 
+                         number=10, 
+                         ## repeated ten times
+                         repeats=10)
 ```
 
 #### 4.3.2.3. - Obtención de modelos 
@@ -476,16 +451,16 @@ modelKNN<-train(quality_class ~ ., data=dt_winequality.data.train, method="knn",
 modelKNN
 ```
 
-#### 4.3.2.3.2 - Generalized Linear Model
+#### 4.3.2.3.3 - Generalized Linear Model
 
 ```{r echo=TRUE, message=FALSE, warning=FALSE, paged.print=TRUE}
 modelGLM<-train(quality_class ~ ., data=dt_winequality.data.train, method="glm", trControl=fitControl)
 modelGLM
 ```
 
-#### 4.3.2.3.3 - Comparativa de modelos
+#### 4.3.2.3.4 - Comparativa de modelos
 
-Para comparar los diferentes modelos, al habarse obtenido todos a partir del paquete Caret se puede usar la función resamples
+Para comparar los diferentes modelos, al habarse obtenido todos a partir del paquete Caret se puede usar la función resamples.
 
 ```{r}
 results<-resamples(list(RPART=modelRPART, KNN=modelKNN, GLM=modelGLM))
@@ -527,11 +502,12 @@ plot.roc(as.numeric(predicted_GLM), as.numeric(dt_winequality.data.test.Y), prin
 Se ha mirado la reducción de la dimensionalidad del problema a partir del estudio de correlación de variables y de la aplicación de PCA. 
 
 Las correlaciones de variables aunque alta en un par de ellas no es excesivamente alta y debido al limitado número de variables se opta por manternerlas en la obtención del modelo.
+
 En cuanto al estudio de PCA se observa que la varianza de la variable de respuesta está bastante distribuida entre las componentes principales. Para llegar a tener un 80% de la varianza explicada se debería de trabajar con hasta 6 componentes principales. Por ello de nuevo, se opta por la opción de no disminuir el número de variables del problema.
 
-Al principio de la práctica se plantearon dos objetivos :
+Al principio de la práctica se plantearon dos objetivos:
 
-1) Validar si la calidad del vino tinto y blanco son diferentes
+1) Validar si la calidad del vino tinto y blanco son diferentes.
 2) Obtener un modelo que sea capaz de clasificar la calidad del vino en una variable dicotómica good/not good.
 
 Respecto del primer objetivo el contraste de hipotesis comparando las medias de las dos muestras con la consideración de tener varianzas desconocidas, pero iguales, se determina que las medias son diferentes.
@@ -540,3 +516,30 @@ Respecto del segundo objetivo se han probado diversos algoritmos ofrecidos por l
 
 Calculando el valor de AUC se determina que el modelo es capaz de discriminar de manera adecuada.
 
+******
+# 6 - Código fuente
+******
+
+El código fuente puede ser consultado en nuestro repositorio [Github](https://github.com/dcarretero/UOC-TCVD-Practica_2)
+
+******
+# 7 - Vídeo
+******
+
+Por último compartimos un vídeo explicativo de la práctica: [Vídeo Práctica 2 Daniel Carretero Ivan Tecles]()
+
+******
+# 8 - Recursos
+******
+
+Los siguientes recursos son de utilidad para la realización de la práctica:
+
+- Calvo M., Subirats L., Pérez D. (2019). Introducción a la limpieza y análisis de los datos. Editorial UOC.
+- Megan Squire (2015). Clean Data. Packt Publishing Ltd.
+- Jiawei Han, Micheine Kamber, Jian Pei (2012). Data mining: concepts and techniques. Morgan Kaufmann.
+
+| Contribuciones              | Firma                         |
+|-----------------------------|-------------------------------|
+| Investigación               | Daniel Carretero, Iván Tecles |
+| Redacción de las respuestas | Daniel Carretero, Iván Tecles |
+| Desarrollo del código       | Daniel Carretero, Iván Tecles |
