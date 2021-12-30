@@ -33,7 +33,7 @@ Basicamente nos planteamos dos preguntas a resolver en la práctica planteada co
 ## Ficheros del código fuente y vídeo.
 
 Se han generado un proyecto con los siguientes ficheros y directorios:
-  * **src**: Directorio del código en R Studio y su salida en HTML.
+  * **src**: Directorio del código en R y su salida en HTML.
   * **datasets**: Directorio donde se almacenan los datasets.
   * **video**: Directorio donde se almacenan el vídeo presentación del proyecto.
   
